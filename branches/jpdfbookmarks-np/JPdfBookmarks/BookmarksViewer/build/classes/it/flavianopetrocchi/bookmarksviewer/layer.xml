@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="Window">
+            <file name="it-flavianopetrocchi-bookmarksviewer-BookmarksAction.instance">
+                <attr name="component" methodvalue="it.flavianopetrocchi.bookmarksviewer.BookmarksTopComponent.findInstance"/>
+                <attr name="displayName" bundlevalue="it.flavianopetrocchi.bookmarksviewer.Bundle#CTL_BookmarksAction"/>
+                <attr name="iconBase" stringvalue="it/flavianopetrocchi/bookmarksviewer/bookmark.png"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="BookmarksAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/it-flavianopetrocchi-bookmarksviewer-BookmarksAction.instance"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="BookmarksTopComponent.settings" url="BookmarksTopComponentSettings.xml"/>
+        </folder>
+        <folder name="Modes">
+            <folder name="explorer">
+                <file name="BookmarksTopComponent.wstcref" url="BookmarksTopComponentWstcref.xml"/>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>

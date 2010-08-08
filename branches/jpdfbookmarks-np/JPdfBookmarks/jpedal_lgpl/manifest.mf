@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.jpedal
+OpenIDE-Module-Localizing-Bundle: org/jpedal/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

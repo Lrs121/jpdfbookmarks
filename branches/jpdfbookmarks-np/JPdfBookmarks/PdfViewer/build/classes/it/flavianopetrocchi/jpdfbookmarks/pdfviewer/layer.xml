@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="Window">
+            <file name="it-flavianopetrocchi-jpdfbookmarks-pdfviewer-PdfAction.instance">
+                <attr name="component" methodvalue="it.flavianopetrocchi.jpdfbookmarks.pdfviewer.PdfTopComponent.findInstance"/>
+                <attr name="displayName" bundlevalue="it.flavianopetrocchi.jpdfbookmarks.pdfviewer.Bundle#CTL_PdfAction"/>
+                <attr name="iconBase" stringvalue="it/flavianopetrocchi/jpdfbookmarks/pdfviewer/pdf16.png"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="PdfAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/it-flavianopetrocchi-jpdfbookmarks-pdfviewer-PdfAction.instance"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="PdfTopComponent.settings" url="PdfTopComponentSettings.xml"/>
+        </folder>
+        <folder name="Modes">
+            <folder name="editor">
+                <file name="PdfTopComponent.wstcref" url="PdfTopComponentWstcref.xml"/>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>

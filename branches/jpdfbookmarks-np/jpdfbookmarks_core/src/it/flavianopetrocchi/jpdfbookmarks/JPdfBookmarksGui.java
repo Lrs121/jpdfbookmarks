@@ -958,7 +958,8 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         }
     }
 
-    public void showErrorMessage(String resMessage) {
+ 
+   public void showErrorMessage(String resMessage) {
         JOptionPane.showMessageDialog(JPdfBookmarksGui.this,
                 resMessage, title,
                 JOptionPane.ERROR_MESSAGE);

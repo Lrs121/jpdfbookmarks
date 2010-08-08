@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: it.flavianopetrocchi.jpdfbookmarks.gfx
+OpenIDE-Module-Localizing-Bundle: it/flavianopetrocchi/jpdfbookmarks/gfx/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

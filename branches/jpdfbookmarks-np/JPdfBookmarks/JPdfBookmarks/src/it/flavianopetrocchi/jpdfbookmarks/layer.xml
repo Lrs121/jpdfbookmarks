@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="Help">
+            <file name="org-netbeans-core-actions-AboutAction.instance_hidden"/>
+            <file name="it-flavianopetrocchi-jpdfbookmarks-AboutBoxAction.instance">
+                <attr name="delegate" newvalue="it.flavianopetrocchi.jpdfbookmarks.AboutBoxAction"/>
+                <attr name="displayName" bundlevalue="it.flavianopetrocchi.jpdfbookmarks.locales.localizedText#MENU_ABOUT_BOX"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" boolvalue="false"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Help">
+            <file name="it-flavianopetrocchi-jpdfbookmarks-AboutBoxAction-separatorBefore.instance">
+                <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                <attr name="position" intvalue="1550"/>
+            </file>
+            <file name="it-flavianopetrocchi-jpdfbookmarks-AboutBoxAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Help/it-flavianopetrocchi-jpdfbookmarks-AboutBoxAction.instance"/>
+                <attr name="position" intvalue="1600"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Modes">
+            <folder name="explorer">
+                <file name="favorites.wstcref" url="favoritesWstcref.xml"/>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>

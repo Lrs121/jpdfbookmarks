@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module: it.flavianopetrocchi.jpdfbookmarks.pdfviewer
+OpenIDE-Module-Layer: it/flavianopetrocchi/jpdfbookmarks/pdfviewer/layer.xml
+OpenIDE-Module-Localizing-Bundle: it/flavianopetrocchi/jpdfbookmarks/pdfviewer/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
