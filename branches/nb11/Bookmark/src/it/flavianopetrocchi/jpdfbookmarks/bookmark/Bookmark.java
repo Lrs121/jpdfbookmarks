@@ -39,6 +39,7 @@ import java.util.Iterator;
 import java.util.ServiceLoader;
 import java.util.StringTokenizer;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 public class Bookmark extends DefaultMutableTreeNode implements Serializable {
 
@@ -1087,9 +1088,9 @@ public class Bookmark extends DefaultMutableTreeNode implements Serializable {
 
     public void setRemoteFilePathWithChildren(File file) {
         String path = Ut.onWindowsReplaceBackslashWithSlash(file.getPath());
-        Enumeration<Bookmark> e = this.preorderEnumeration();
+        Enumeration<TreeNode> e = this.preorderEnumeration();
         while (e.hasMoreElements()) {
-            Bookmark b = e.nextElement();
+            Bookmark b = (Bookmark) e.nextElement();
             setRemoteTarget(b, path);
         }
     }

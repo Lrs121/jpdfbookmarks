@@ -8,7 +8,6 @@ import java.awt.geom.AffineTransform;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import sun.swing.SwingUtilities2;
 
 public class VerticalPanelSelector extends JComponent {
 
