@@ -6,5 +6,10 @@
         <group>
             <file>file:/Users/rfritz/NetBeansProjects/jpdfbookmarks/code/branches/nb11/jpdfbookmarks_languages/src/it/flavianopetrocchi/jpdfbookmarks/locales/localizedText.properties</file>
         </group>
+        <group name="jpdfbookmarks_core">
+            <file>file:/Users/rfritz/NetBeansProjects/jpdfbookmarks/code/branches/nb11/jpdfbookmarks_languages/src/it/flavianopetrocchi/jpdfbookmarks/locales/localizedText.properties</file>
+            <file>file:/Users/rfritz/NetBeansProjects/jpdfbookmarks/code/branches/nb11/jpdfbookmarks_languages/src/it/flavianopetrocchi/jpdfbookmarks/locales/localizedText_el_GR.properties</file>
+            <file>file:/Users/rfritz/NetBeansProjects/jpdfbookmarks/code/branches/nb11/jpdfbookmarks_languages/src/it/flavianopetrocchi/jpdfbookmarks/global/macKeyboardShortcuts.properties</file>
+        </group>
     </open-files>
 </project-private>
