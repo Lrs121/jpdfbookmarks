@@ -39,9 +39,11 @@ public class AboutBox extends javax.swing.JDialog {
     private URI homePage;
     //private Color focusedColor = new Color(128, 0, 128);
     private Color nonFocusedColor = new Color(0, 0, 255);
-    private MyHyperlinkListener linksListener;
+    private final MyHyperlinkListener linksListener;
 
-    /** Creates new form AboutBox5 */
+    /** 
+     * Create jPdfBookmarks' "About" box.
+     */
     public AboutBox(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         try {
@@ -49,13 +51,18 @@ public class AboutBox extends javax.swing.JDialog {
         } catch (URISyntaxException ex) {
         }
         initComponents();
+
         Cursor handCursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
+        // Set the cursor for mouse-over hyperlink to the hand
         txtMail.setCursor(handCursor);
         txtHomepage.setCursor(handCursor);
         txtBlog.setCursor(handCursor);
         btnClose.requestFocusInWindow();
+        // Turn on the hyperlink listener
         linksListener = new MyHyperlinkListener(this);
         txtLibraries.addHyperlinkListener(linksListener);
+        // Position the library credits window to the top
+        txtLibraries.setCaretPosition(0);
     }
 
     /** This method is called from within the constructor to
@@ -197,8 +204,8 @@ public class AboutBox extends javax.swing.JDialog {
 
         appDescLabel1.setText(bundle.getString("ABOUT_LIBRARIES")); // NOI18N
 
-        txtLibraries.setContentType("text/html");
         txtLibraries.setEditable(false);
+        txtLibraries.setContentType("text/html"); // NOI18N
         txtLibraries.setText("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n<html>\n<head>\n</head>\n<body>\n<span style=\"font-weight: bold;\">Apache Commons CLI</span><br>\nCopyright 2001-2009 The Apache Software Foundation <br>\n<a href=\"http://commons.apache.org/cli/\">http://commons.apache.org/cli/</a><br>\nApache License Version 2.0, January 2004<br>\n<a href=\"http://www.apache.org/licenses/\">http://www.apache.org/licenses/</a><br>\n<br>\n<span style=\"font-weight: bold;\">iText-2.1.7</span><br>\nCopyright 1999, 2000, 2001, 2002 by Bruno Lowagie.<br>\n<a href=\"http://www.lowagie.com/iText/\">http://www.lowagie.com/iText/</a><br>\nGNU LIBRARY GENERAL PUBLIC LICENSE Version 2 (or later version)<br>\n<a href=\"http://www.gnu.org/licenses\">http://www.gnu.org/licenses</a>/<br>\nPatched with some custom code in SimpleBookmark.java (patch available under GPL)<br>\n<br>\n<b>Bouncy Castle Crypto APIs<br>\n</b>Copyright (c) 2000 - 2009 The Legion Of The Bouncy Castle<br>\n<a href=\"http://www.bouncycastle.org\">http://www.bouncycastle.org</a>\n<br>\nAdaptation of the <a\n href=\"http://opensource.org/licenses/mit-license.php\">MIT\nX11 License</a><br>\n<a href=\"http://www.bouncycastle.org/licence.html\">http://www.bouncycastle.org/licence.html</a><br>\n<span style=\"font-weight: bold;\"></span><br>\n<span style=\"font-weight: bold;\">JPedal</span><br>\n(C) Copyright 1997-2008, IDRsolutions and Contributors.<br>\n<a href=\"http://www.jpedal.org\">http://www.jpedal.org</a><br>\nGNU Lesser General Public License Version 2.1 (or later version)<br>\n<a href=\"http://www.gnu.org/licenses/\">http://www.gnu.org/licenses/</a><br>\n<br>\nIcons are from the <span style=\"font-weight: bold;\">\"Tango\nDesktop Project\"</span><br>\n<a href=\"http://tango.freedesktop.org/Tango_Desktop_Project\">http://tango.freedesktop.org/Tango_Desktop_Project</a>\n</body>\n</html>\n"); // NOI18N
         jScrollPane1.setViewportView(txtLibraries);
 
@@ -212,43 +219,43 @@ public class AboutBox extends javax.swing.JDialog {
         rightPanelLayout.setHorizontalGroup(
             rightPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(rightPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(versionLabel)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(appVersionLabel)
-                .add(373, 373, 373))
-            .add(rightPanelLayout.createSequentialGroup()
                 .add(10, 10, 10)
-                .add(appDescLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
-                .addContainerGap(20, Short.MAX_VALUE))
-            .add(rightPanelLayout.createSequentialGroup()
-                .add(10, 10, 10)
-                .add(appTitleLabel)
-                .addContainerGap(390, Short.MAX_VALUE))
+                .add(appDescLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE)
+                .addContainerGap(64, Short.MAX_VALUE))
             .add(rightPanelLayout.createSequentialGroup()
                 .add(10, 10, 10)
                 .add(appDescLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
                 .addContainerGap(20, Short.MAX_VALUE))
             .add(rightPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(rightPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(homepageLabel)
-                    .add(siteLabel)
-                    .add(homepageLabel2)
-                    .add(vendorLabel1)
-                    .add(vendorLabel))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(rightPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(appVendorLabel1)
-                    .add(appVendorLabel)
-                    .add(txtMail, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(txtHomepage, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(txtBlog, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(205, Short.MAX_VALUE))
-            .add(rightPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 575, Short.MAX_VALUE)
                 .addContainerGap())
+            .add(rightPanelLayout.createSequentialGroup()
+                .add(rightPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(rightPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(versionLabel)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(appVersionLabel))
+                    .add(rightPanelLayout.createSequentialGroup()
+                        .add(10, 10, 10)
+                        .add(appTitleLabel))
+                    .add(rightPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(rightPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(homepageLabel)
+                            .add(siteLabel)
+                            .add(homepageLabel2)
+                            .add(vendorLabel1)
+                            .add(vendorLabel))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(rightPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(appVendorLabel1)
+                            .add(appVendorLabel)
+                            .add(txtMail, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(txtHomepage, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(txtBlog, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         rightPanelLayout.setVerticalGroup(
             rightPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)

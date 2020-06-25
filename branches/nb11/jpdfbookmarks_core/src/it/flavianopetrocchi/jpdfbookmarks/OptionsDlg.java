@@ -21,9 +21,12 @@
  */
 package it.flavianopetrocchi.jpdfbookmarks;
 
-import java.awt.BorderLayout;
 import javax.swing.JOptionPane;
 
+/*
+  * Options/Preferences dialog
+  * @author Flaviano Petrocchi
+  */
 public class OptionsDlg extends javax.swing.JDialog {
     public final static int GENERAL_PANEL = 0;
     public final static int PROXY_PANEL = 1;
@@ -38,7 +41,11 @@ public class OptionsDlg extends javax.swing.JDialog {
     private JPdfBookmarksGui gui;
 
 
-    /** Creates new form OptionsDlg */
+    /** 
+     * Constructor, which sets up the GUI.
+     * @param parent    The JPdfBookmarksGui instance to which menubar changes will apply. On macOS, may be null.
+     * @param modal     Boolean – will the dialog box be modal
+     */
     public OptionsDlg(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -52,7 +59,7 @@ public class OptionsDlg extends javax.swing.JDialog {
         mainTabPane.add(Res.getString("TAB_TOOLBARS_MANAGER"), toolbarsOptions);
 //        mainTabPane.setMnemonicAt(0, Res.mnemonicFromRes("TAB_ENCODING_OPTIONS_MNEMONIC"));
 //        mainTabPane.add(Res.getString("TAB_ENCODING_OPTIONS"), encodingOptions);
-        
+
         pack();
     }
 
@@ -187,8 +194,11 @@ public class OptionsDlg extends javax.swing.JDialog {
             userPrefs.setNeverAskWebAccess(connectionOptions.neverAskWebAccess());
 
             toolbarsOptions.saveToolbarPreferences();
-            gui.updateToolbars();
-            
+            // if called from menubar of JPdfBookmarksGui (not on macOS!)
+            // Unfortunately, this means that calling
+            if (gui != null)
+                gui.updateToolbars();
+
             dispose();
 	}//GEN-LAST:event_btnOkActionPerformed
 

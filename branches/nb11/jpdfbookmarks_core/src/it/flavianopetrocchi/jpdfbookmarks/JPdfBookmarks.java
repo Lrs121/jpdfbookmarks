@@ -25,7 +25,17 @@ import com.lowagie.text.exceptions.BadPasswordException;
 import it.flavianopetrocchi.jpdfbookmarks.bookmark.IBookmarksConverter;
 import it.flavianopetrocchi.jpdfbookmarks.bookmark.Bookmark;
 import it.flavianopetrocchi.utilities.Ut;
+import java.awt.Desktop;
 import java.awt.EventQueue;
+import java.awt.desktop.AboutHandler;
+import java.awt.desktop.AboutEvent;
+import java.awt.desktop.PreferencesEvent;
+import java.awt.desktop.PreferencesHandler;
+import java.awt.desktop.QuitEvent;
+import java.awt.desktop.QuitHandler;
+import java.awt.desktop.QuitResponse;
+import java.awt.desktop.QuitStrategy;
+import static java.awt.desktop.QuitStrategy.CLOSE_ALL_WINDOWS;
 import java.io.BufferedReader;
 import java.io.Console;
 import java.io.File;
@@ -100,6 +110,7 @@ class JPdfBookmarks {
     public static final String LAST_VERSION_PROPERTIES_URL =
             "http://jpdfbookmarks.altervista.org/version/jpdfbookmarks.properties";
     public static final String MANUAL_URL = "http://sourceforge.net/apps/mediawiki/jpdfbookmarks/";
+    public static final boolean MACOS = System.getProperty("os.name").contains("OS X");
     private static final int MAX_PASSWORD_LEN = 32;
     //"http://jpdfbookmarks.altervista.org";
     private Mode mode = Mode.GUI;
@@ -443,8 +454,11 @@ class JPdfBookmarks {
         @Override
         public void run() {
             try {
+                if (MACOS)
+                    setupMacOSappInstance();
                 JPdfBookmarksGui viewer;
                 viewer = new JPdfBookmarksGui();
+                viewer.initGui();
                 Prefs prefs = new Prefs();
                 //prefs.setGplAccepted(false); //for debugging only remember to comment
                 if (!prefs.getGplAccepted()) {
@@ -467,6 +481,45 @@ class JPdfBookmarks {
                         APP_NAME, JOptionPane.INFORMATION_MESSAGE);
             }
         }
+    }
+    
+    private void setupMacOSappInstance() {
+        // Set up the Mac menu bar
+        // This still works, but is undocumented and who knows for how long it will work?
+        // Eventually, I would like to replace it with desktop.setDefaultMenuBar​(this.getJMenuBar());
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        
+         // if Desktop isn't supported, this method can't do anything else, so return.
+        if (!Desktop.isDesktopSupported()) {
+            return;
+        }
+
+        // Build app menu "About" box
+        AboutHandler ah = (AboutEvent e) -> {
+            AboutBox aboutBox = new AboutBox(null, true);
+            aboutBox.setLocationByPlatform(true);
+            aboutBox.setVisible(true);
+        };
+
+        // Build app menu preferences handler
+        PreferencesHandler ph = (PreferencesEvent e) -> {
+            OptionsDlg opts = new OptionsDlg(null, true);
+            opts.setLocationByPlatform(true);
+            opts.setVisible(true);
+        };
+
+        // Build app menu quit handler.
+        QuitHandler qh = (QuitEvent e, QuitResponse qr) -> {
+            qr.performQuit();
+        };
+
+        // Now, put all those handlers in place
+        Desktop desktop = Desktop.getDesktop();
+        desktop.setAboutHandler(ah);
+        desktop.setPreferencesHandler(ph);
+        // Make sure modified windows are closed before quitting.
+        desktop.setQuitStrategy(CLOSE_ALL_WINDOWS);
+        desktop.setQuitHandler(qh);
     }
 
     public static void printErrorForDebug(Exception e) {

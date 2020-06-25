@@ -37,9 +37,8 @@ import java.util.Comparator;
 import javax.management.ServiceNotFoundException;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import java.awt.Rectangle;
 
-public class UnifiedFileOperator {
+public final class UnifiedFileOperator {
 
     //private IPdfView viewPanel = new PdfViewAdapter();
     //private IPdfView viewPanel = new PdfRendererViewPanel();

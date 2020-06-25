@@ -82,10 +82,12 @@ public class Prefs {
 
         public static final String NUM_CLICKS = "NUM_CLICKS";
 
-	private Dimension screenSize = null;
+        private Dimension screenSize = null;
 
-	Prefs() {
-	}
+         /**
+          * Empty constructor. It's a really simple class.
+          */
+        Prefs() {}
 
         public String getPanelToShow() {
             return userPrefs.get(PANEL_TO_SHOW, Res.getString("BOOKMARKS_TAB_TITLE"));
@@ -121,201 +123,201 @@ public class Prefs {
             userPrefs.putBoolean(name, value);
         }
 
-        public boolean getGplAccepted() {
-		return userPrefs.getBoolean(GPL_ACCEPTED, false);
-	}
+    public boolean getGplAccepted() {
+        return userPrefs.getBoolean(GPL_ACCEPTED, false);
+    }
 
-	public void setGplAccepted(boolean gplAccepted) {
-		userPrefs.putBoolean(GPL_ACCEPTED, gplAccepted);
-	}
+    public void setGplAccepted(boolean gplAccepted) {
+        userPrefs.putBoolean(GPL_ACCEPTED, gplAccepted);
+    }
 
-	public boolean getUseProxy() {
-		return userPrefs.getBoolean(USE_PROXY, false);
-	}
+    public boolean getUseProxy() {
+        return userPrefs.getBoolean(USE_PROXY, false);
+    }
 
-	public void setUseProxy(boolean useProxy) {
-		userPrefs.putBoolean(USE_PROXY, useProxy);
-	}
+    public void setUseProxy(boolean useProxy) {
+        userPrefs.putBoolean(USE_PROXY, useProxy);
+    }
 
-        public boolean getNeverAskWebAccess() {
-		return userPrefs.getBoolean(CONFIRM_WEB_ACCESS, false);
-	}
+    public boolean getNeverAskWebAccess() {
+        return userPrefs.getBoolean(CONFIRM_WEB_ACCESS, false);
+    }
 
-	public void setNeverAskWebAccess(boolean neverAsk) {
-		userPrefs.putBoolean(CONFIRM_WEB_ACCESS, neverAsk);
-	}
+    public void setNeverAskWebAccess(boolean neverAsk) {
+        userPrefs.putBoolean(CONFIRM_WEB_ACCESS, neverAsk);
+    }
 
-	public boolean getCheckUpdatesOnStart() {
-		return userPrefs.getBoolean(CHECK_UPDATES_ON_START, true);
-	}
+    public boolean getCheckUpdatesOnStart() {
+        return userPrefs.getBoolean(CHECK_UPDATES_ON_START, true);
+    }
 
-	public void setCheckUpdatesOnStart(boolean check) {
-		userPrefs.putBoolean(CHECK_UPDATES_ON_START, check);
-	}
-	
-	public String getProxyType() {
-		return userPrefs.get(PROXY_TYPE, "HTTP");
-	}
-	
-	public void setProxyType(String proxyType) {
-		userPrefs.put(PROXY_TYPE, proxyType);
-	}
+    public void setCheckUpdatesOnStart(boolean check) {
+        userPrefs.putBoolean(CHECK_UPDATES_ON_START, check);
+    }
 
-	public String getProxyAddress() {
-		return userPrefs.get(PROXY_ADDRESS, "");
-	}
+    public String getProxyType() {
+        return userPrefs.get(PROXY_TYPE, "HTTP");
+    }
 
-	public void setProxyAddress(String proxyAddress) {
-		userPrefs.put(PROXY_ADDRESS, proxyAddress);
-	}
+    public void setProxyType(String proxyType) {
+        userPrefs.put(PROXY_TYPE, proxyType);
+    }
 
-	public int getProxyPort() {
-		return userPrefs.getInt(PROXY_PORT, 80);
-	}
+    public String getProxyAddress() {
+        return userPrefs.get(PROXY_ADDRESS, "");
+    }
 
-	public void setProxyPort(int proxyPort) {
-		userPrefs.putInt(PROXY_PORT, proxyPort);
-	}
+    public void setProxyAddress(String proxyAddress) {
+        userPrefs.put(PROXY_ADDRESS, proxyAddress);
+    }
 
-	public String getIndentationString() {
-		return userPrefs.get(INDENT_STRING, "\t");
-	}
+    public int getProxyPort() {
+        return userPrefs.getInt(PROXY_PORT, 80);
+    }
 
-	public void setIndentationString(String indent) {
-		userPrefs.put(INDENT_STRING, indent);
-	}
+    public void setProxyPort(int proxyPort) {
+        userPrefs.putInt(PROXY_PORT, proxyPort);
+    }
 
-	public String getPageSeparator() {
-		return userPrefs.get(PAGE_SEPARATOR, "/");
-	}
+    public String getIndentationString() {
+        return userPrefs.get(INDENT_STRING, "\t");
+    }
 
-	public void setPageSeparator(String separator) {
-		userPrefs.put(PAGE_SEPARATOR, separator);
-	}
+    public void setIndentationString(String indent) {
+        userPrefs.put(INDENT_STRING, indent);
+    }
 
-	public String getAttributesSeparator() {
-		return userPrefs.get(ATTRIBUTES_SEPARATOR, ",");
-	}
+    public String getPageSeparator() {
+        return userPrefs.get(PAGE_SEPARATOR, "/");
+    }
 
-	public void setAttributesSeparator(String separator) {
-		userPrefs.put(ATTRIBUTES_SEPARATOR, separator);
-	}
+    public void setPageSeparator(String separator) {
+        userPrefs.put(PAGE_SEPARATOR, separator);
+    }
 
-	public void addRecentFile(String path) {
-		String[] filePaths = getRecentFiles();
-		for (int i = 0; i < filePaths.length; i++) {
-			 if (path.equals(filePaths[i])) {
-				 return;
-			 }
-		}
-		userPrefs.put(RECENT + "0", path);
-		for (int i = 1; i < filePaths.length; i++) {
-			 userPrefs.put(RECENT + String.valueOf(i), filePaths[i - 1]);
-		}
-	}
+    public String getAttributesSeparator() {
+        return userPrefs.get(ATTRIBUTES_SEPARATOR, ",");
+    }
 
-	public String[] getRecentFiles() {
-		String[] filePaths = new String[RECENT_FILES_NUM];
-		for (int i = 0; i < filePaths.length; i++) {
-			 filePaths[i] = userPrefs.get(RECENT + String.valueOf(i), "");
-		}
-		return filePaths;
-	}
+    public void setAttributesSeparator(String separator) {
+        userPrefs.put(ATTRIBUTES_SEPARATOR, separator);
+    }
 
-	public boolean getConvertNamedDestinations() {
-		return userPrefs.getBoolean(CONVERT_NAMED_DEST, true);
-	}
+    public void addRecentFile(String path) {
+        String[] filePaths = getRecentFiles();
+            for (String filePath : filePaths) {
+                if (path.equals(filePath)) {
+                    return;
+                }
+            }
+        userPrefs.put(RECENT + "0", path);
+        for (int i = 1; i < filePaths.length; i++) {
+            userPrefs.put(RECENT + String.valueOf(i), filePaths[i - 1]);
+        }
+    }
 
-	public void setConvertNamedDestinations(boolean convert) {
-		userPrefs.putBoolean(CONVERT_NAMED_DEST, convert);
-	}
+    public String[] getRecentFiles() {
+        String[] filePaths = new String[RECENT_FILES_NUM];
+        for (int i = 0; i < filePaths.length; i++) {
+            filePaths[i] = userPrefs.get(RECENT + String.valueOf(i), "");
+        }
+        return filePaths;
+    }
 
-	public boolean getUseThousandths() {
-		return userPrefs.getBoolean(USE_THOUSANDTHS, true);
-	}
+    public boolean getConvertNamedDestinations() {
+        return userPrefs.getBoolean(CONVERT_NAMED_DEST, true);
+    }
 
-	public void setUseThousandths(boolean useThousandths) {
-		userPrefs.putBoolean(USE_THOUSANDTHS, useThousandths);
-	}
+    public void setConvertNamedDestinations(boolean convert) {
+        userPrefs.putBoolean(CONVERT_NAMED_DEST, convert);
+    }
 
-	public void setMaximized(boolean maximized) {
-		userPrefs.putBoolean(MAXIMIZED, maximized);
-	}
+    public boolean getUseThousandths() {
+        return userPrefs.getBoolean(USE_THOUSANDTHS, true);
+    }
 
-	public boolean getMaximized() {
-		return userPrefs.getBoolean(MAXIMIZED, false);
-	}
+    public void setUseThousandths(boolean useThousandths) {
+        userPrefs.putBoolean(USE_THOUSANDTHS, useThousandths);
+    }
 
-	public int getSplitterLocation() {
-		return userPrefs.getInt(SPLITTER_POS, -1);
-	}
+    public void setMaximized(boolean maximized) {
+        userPrefs.putBoolean(MAXIMIZED, maximized);
+    }
 
-	public void setSplitterLocation(int location) {
-		userPrefs.putInt(SPLITTER_POS, location);
-	}
+    public boolean getMaximized() {
+        return userPrefs.getBoolean(MAXIMIZED, false);
+    }
 
-	public String getLAF() {
-		String currentLAF = UIManager.getSystemLookAndFeelClassName();
-		return userPrefs.get(LAF, currentLAF);
-	}
+    public int getSplitterLocation() {
+        return userPrefs.getInt(SPLITTER_POS, -1);
+    }
 
-	public void setLAF(String laf) {
-		userPrefs.put(LAF, laf);
-	}
+    public void setSplitterLocation(int location) {
+        userPrefs.putInt(SPLITTER_POS, location);
+    }
 
-	public String getLastDirectory() {
-		String userDir = System.getProperty("user.home");
-		String lastDirectory = userPrefs.get(LAST_DIRECTORY, userDir);
-		return lastDirectory;
-	}
+    public String getLAF() {
+        String currentLAF = UIManager.getSystemLookAndFeelClassName();
+        return userPrefs.get(LAF, currentLAF);
+    }
 
-	public void setLastDirectory(String lastDirectory) {
-		userPrefs.put(LAST_DIRECTORY, lastDirectory);
-	}
+    public void setLAF(String laf) {
+        userPrefs.put(LAF, laf);
+    }
 
-	public Point getLocation() {
-		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int x = userPrefs.getInt(LOCATION_X, (int)(screenSize.width * 0.10));
-		int y = userPrefs.getInt(LOCATION_Y, (int)(screenSize.height * 0.10));
-		return new Point(x, y);
-	}
+    public String getLastDirectory() {
+        String userDir = System.getProperty("user.home");
+        String lastDirectory = userPrefs.get(LAST_DIRECTORY, userDir);
+        return lastDirectory;
+    }
 
-	public void setLocation(Point location) {
-		if (location == null) {
-			userPrefs.remove(LOCATION_X);
-			userPrefs.remove(LOCATION_Y);
-		} else {
-			userPrefs.putInt(LOCATION_X, location.x);
-			userPrefs.putInt(LOCATION_Y, location.y);
-		}
-	}
+    public void setLastDirectory(String lastDirectory) {
+        userPrefs.put(LAST_DIRECTORY, lastDirectory);
+    }
 
-	public void setWindowState(int state) {
-		userPrefs.putInt(WINDOW_STATE, state);
-	}
+    public Point getLocation() {
+        screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = userPrefs.getInt(LOCATION_X, (int) (screenSize.width * 0.10));
+        int y = userPrefs.getInt(LOCATION_Y, (int) (screenSize.height * 0.10));
+        return new Point(x, y);
+    }
 
-	public int getWindowState() {
-		return userPrefs.getInt(WINDOW_STATE, JFrame.NORMAL);
-	}
+    public void setLocation(Point location) {
+        if (location == null) {
+            userPrefs.remove(LOCATION_X);
+            userPrefs.remove(LOCATION_Y);
+        } else {
+            userPrefs.putInt(LOCATION_X, location.x);
+            userPrefs.putInt(LOCATION_Y, location.y);
+        }
+    }
 
-	public Dimension getSize() {
-		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int width = userPrefs.getInt(SIZE_WIDTH,
-				(int)(screenSize.width * 0.80));
-		int height = userPrefs.getInt(SIZE_HEIGHT,
-				(int)(screenSize.height * 0.80));
-		return new Dimension(width, height);
-	}
+    public void setWindowState(int state) {
+        userPrefs.putInt(WINDOW_STATE, state);
+    }
 
-	public void setSize(Dimension size) {
-		if (size == null) {
-			userPrefs.remove(SIZE_WIDTH);
-			userPrefs.remove(SIZE_HEIGHT);
-		} else {
-			userPrefs.putInt(SIZE_WIDTH, size.width);
-			userPrefs.putInt(SIZE_HEIGHT, size.height);
-		}
-	}
+    public int getWindowState() {
+        return userPrefs.getInt(WINDOW_STATE, JFrame.NORMAL);
+    }
+
+    public Dimension getSize() {
+        screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = userPrefs.getInt(SIZE_WIDTH,
+                (int) (screenSize.width * 0.80));
+        int height = userPrefs.getInt(SIZE_HEIGHT,
+                (int) (screenSize.height * 0.80));
+        return new Dimension(width, height);
+    }
+
+    public void setSize(Dimension size) {
+        if (size == null) {
+            userPrefs.remove(SIZE_WIDTH);
+            userPrefs.remove(SIZE_HEIGHT);
+        } else {
+            userPrefs.putInt(SIZE_WIDTH, size.width);
+            userPrefs.putInt(SIZE_HEIGHT, size.height);
+        }
+    }
 
     int getNumClicks() {
         return userPrefs.getInt(NUM_CLICKS, 2);

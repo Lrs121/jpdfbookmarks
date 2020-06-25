@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.5" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
   <Properties>
@@ -8,6 +8,7 @@
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -51,22 +52,10 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="versionLabel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="appVersionLabel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="373" max="-2" attributes="0"/>
-              </Group>
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="10" pref="10" max="10" attributes="0"/>
-                  <Component id="appDescLabel1" pref="470" max="32767" attributes="0"/>
-                  <EmptySpace pref="20" max="32767" attributes="0"/>
-              </Group>
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="10" pref="10" max="10" attributes="0"/>
-                  <Component id="appTitleLabel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="390" max="32767" attributes="0"/>
+                  <Component id="appDescLabel1" pref="513" max="32767" attributes="0"/>
+                  <EmptySpace pref="64" max="32767" attributes="0"/>
               </Group>
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="10" pref="10" max="10" attributes="0"/>
@@ -75,27 +64,41 @@
               </Group>
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="homepageLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="siteLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="homepageLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="vendorLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="vendorLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="jScrollPane1" pref="575" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="appVendorLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="appVendorLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="txtMail" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="txtHomepage" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="txtBlog" alignment="0" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace pref="205" max="32767" attributes="0"/>
               </Group>
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="480" max="32767" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+              <Group type="102" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="versionLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="appVersionLabel" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="10" pref="10" max="10" attributes="0"/>
+                          <Component id="appTitleLabel" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="homepageLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="siteLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="homepageLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="vendorLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="vendorLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="appVendorLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="appVendorLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="txtMail" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="txtHomepage" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="txtBlog" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -372,8 +375,8 @@
           <SubComponents>
             <Component class="javax.swing.JTextPane" name="txtLibraries">
               <Properties>
-                <Property name="contentType" type="java.lang.String" value="text/html"/>
                 <Property name="editable" type="boolean" value="false"/>
+                <Property name="contentType" type="java.lang.String" value="text/html" noResource="true"/>
                 <Property name="text" type="java.lang.String" value="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01//EN&quot; &quot;http://www.w3.org/TR/html4/strict.dtd&quot;&gt;&#xa;&lt;html&gt;&#xa;&lt;head&gt;&#xa;&lt;/head&gt;&#xa;&lt;body&gt;&#xa;&lt;span style=&quot;font-weight: bold;&quot;&gt;Apache Commons CLI&lt;/span&gt;&lt;br&gt;&#xa;Copyright 2001-2009 The Apache Software Foundation &lt;br&gt;&#xa;&lt;a href=&quot;http://commons.apache.org/cli/&quot;&gt;http://commons.apache.org/cli/&lt;/a&gt;&lt;br&gt;&#xa;Apache License Version 2.0, January 2004&lt;br&gt;&#xa;&lt;a href=&quot;http://www.apache.org/licenses/&quot;&gt;http://www.apache.org/licenses/&lt;/a&gt;&lt;br&gt;&#xa;&lt;br&gt;&#xa;&lt;span style=&quot;font-weight: bold;&quot;&gt;iText-2.1.7&lt;/span&gt;&lt;br&gt;&#xa;Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.&lt;br&gt;&#xa;&lt;a href=&quot;http://www.lowagie.com/iText/&quot;&gt;http://www.lowagie.com/iText/&lt;/a&gt;&lt;br&gt;&#xa;GNU LIBRARY GENERAL PUBLIC LICENSE Version 2 (or later version)&lt;br&gt;&#xa;&lt;a href=&quot;http://www.gnu.org/licenses&quot;&gt;http://www.gnu.org/licenses&lt;/a&gt;/&lt;br&gt;&#xa;Patched with some custom code in SimpleBookmark.java (patch available under GPL)&lt;br&gt;&#xa;&lt;br&gt;&#xa;&lt;b&gt;Bouncy Castle Crypto APIs&lt;br&gt;&#xa;&lt;/b&gt;Copyright (c) 2000 - 2009 The Legion Of The Bouncy Castle&lt;br&gt;&#xa;&lt;a href=&quot;http://www.bouncycastle.org&quot;&gt;http://www.bouncycastle.org&lt;/a&gt;&#xa;&lt;br&gt;&#xa;Adaptation of the &lt;a&#xa; href=&quot;http://opensource.org/licenses/mit-license.php&quot;&gt;MIT&#xa;X11 License&lt;/a&gt;&lt;br&gt;&#xa;&lt;a href=&quot;http://www.bouncycastle.org/licence.html&quot;&gt;http://www.bouncycastle.org/licence.html&lt;/a&gt;&lt;br&gt;&#xa;&lt;span style=&quot;font-weight: bold;&quot;&gt;&lt;/span&gt;&lt;br&gt;&#xa;&lt;span style=&quot;font-weight: bold;&quot;&gt;JPedal&lt;/span&gt;&lt;br&gt;&#xa;(C) Copyright 1997-2008, IDRsolutions and Contributors.&lt;br&gt;&#xa;&lt;a href=&quot;http://www.jpedal.org&quot;&gt;http://www.jpedal.org&lt;/a&gt;&lt;br&gt;&#xa;GNU Lesser General Public License Version 2.1 (or later version)&lt;br&gt;&#xa;&lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;&lt;br&gt;&#xa;&lt;br&gt;&#xa;Icons are from the &lt;span style=&quot;font-weight: bold;&quot;&gt;&quot;Tango&#xa;Desktop Project&quot;&lt;/span&gt;&lt;br&gt;&#xa;&lt;a href=&quot;http://tango.freedesktop.org/Tango_Desktop_Project&quot;&gt;http://tango.freedesktop.org/Tango_Desktop_Project&lt;/a&gt;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;&#xa;" noResource="true"/>
               </Properties>
             </Component>
