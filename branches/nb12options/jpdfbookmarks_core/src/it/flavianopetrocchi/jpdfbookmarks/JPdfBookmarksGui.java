@@ -2704,13 +2704,15 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         });
         //menuTools.add(checkItem);
         
-        // For the sake of compatibilty, this is kept on the macOS version, though the "Preferences" app menu
-        // brings up the same dialog box
-        menuTools.addSeparator();
+        if (!MACOS) {
+            // only show this on non-macOS systems; on macOS use the preferences
+            // app menu
+            menuTools.addSeparator();
 
-        item = menuTools.add(optionsDialogAction);
-        item.setMnemonic(Res.mnemonicFromRes("MENU_OPTIONS_MNEMONIC"));
-
+            item = menuTools.add(optionsDialogAction);
+            item.setMnemonic(Res.mnemonicFromRes("MENU_OPTIONS_MNEMONIC"));
+        }
+        
         menuBar.add(menuTools);
 
         JMenu menuWindow = new JMenu(Res.getString("MENU_WINDOW"));
