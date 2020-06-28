@@ -28,6 +28,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.nio.charset.Charset;
 import java.util.prefs.Preferences;
+import java.util.prefs.PreferenceChangeListener;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
@@ -36,7 +37,7 @@ import javax.swing.UIManager;
  */
 public class Prefs {
 
-	private Preferences userPrefs = Preferences.userNodeForPackage(getClass());
+        private final Preferences userPrefs = Preferences.userNodeForPackage(getClass());
 
         private final String GPL_ACCEPTED = "GPL_ACCEPTED";
 
@@ -326,6 +327,13 @@ public class Prefs {
     void setNumClicks(int n) {
         userPrefs.putInt(NUM_CLICKS, n);
     }
-
-
+    
+    public void prefListen(PreferenceChangeListener pcl) {
+        userPrefs.addPreferenceChangeListener(pcl);
+    }
+    
+    public void prefIgnore(PreferenceChangeListener pcl) {
+        userPrefs.removePreferenceChangeListener(pcl);
+    }
+    
 }

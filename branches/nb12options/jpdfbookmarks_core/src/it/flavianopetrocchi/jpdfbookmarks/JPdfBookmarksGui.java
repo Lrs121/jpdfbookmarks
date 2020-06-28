@@ -54,7 +54,6 @@ import java.awt.Window;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.FlavorEvent;
-import java.awt.datatransfer.FlavorListener;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DropTarget;
@@ -93,9 +92,9 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -105,7 +104,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.CellEditor;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
@@ -228,10 +226,10 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
     private JToggleButton tbSelectText;
     private JToggleButton tbConnectToClipboard;
     private JPanel bookmarksPanel;
-    private final JPanel bookmarksToolbarsPanel = new JPanel(/*new WrapFlowLayout(WrapFlowLayout.LEFT)*/);
-    private final HashMap<String, JToolBar> mainToolbars = new HashMap<>();
-    private final HashMap<String, JToolBar> bookmarksToolbars = new HashMap<>();
     private final JPanel mainToolbarsPanel = new JPanel(new WrapFlowLayout(WrapFlowLayout.LEFT));
+    private final HashMap<String, JToolBar> mainToolbars = new HashMap<>();
+    private final JPanel bookmarksToolbarsPanel = new JPanel(/*new WrapFlowLayout(WrapFlowLayout.LEFT)*/);
+    private final HashMap<String, JToolBar> bookmarksToolbars = new HashMap<>();
     private MouseAdapter mouseAdapter;
     private final ToolbarsPopupListener toolbarsPopupListener = new ToolbarsPopupListener();
     private LeftPanel leftPanel;
@@ -353,8 +351,10 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         viewPanel = fileOperator.getViewPanel();
         viewPanel.addTextCopiedListener(this);
 
+        // set up most of the GUI
         initComponents();
- 
+        
+        // Set up file operation listeners
         fileOperator.addFileOperationListener(this);
         viewPanel.addPageChangedListener(this);
         viewPanel.addViewChangedListener(this);
@@ -385,6 +385,17 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
 
         addWindowListener(wndCloser);
         addWindowStateListener(wndCloser);
+        
+        // Set up preferences change listener
+        // This looks inelegant, and perhaps is, but I am not clear on a better way to do this.
+        userPrefs.prefListen(
+                (PreferenceChangeEvent e) -> {
+                    if (mainToolbars.containsKey(e.getKey()))
+                        updateToolbars();
+                    else if (bookmarksToolbars.containsKey(e.getKey())) {
+                        updateToolbars();
+                    }
+                });
     }
     
     public final void flavorsChanged() {
@@ -2619,22 +2630,14 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         } else {
             bookmarksButton.setSelected(true);
         }
-        bookmarksButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (leftPanel != null) {
-                    leftPanel.selectPanelToShow(Res.getString("BOOKMARKS_TAB_TITLE"));
-                }
+        bookmarksButton.addActionListener((ActionEvent e) -> {
+            if (leftPanel != null) {
+                leftPanel.selectPanelToShow(Res.getString("BOOKMARKS_TAB_TITLE"));
             }
         });
-        thumbnailsButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (leftPanel != null) {
-                    leftPanel.selectPanelToShow(Res.getString("THUMBNAILS_TAB_TITLE"));
-                }
+        thumbnailsButton.addActionListener((ActionEvent e) -> {
+            if (leftPanel != null) {
+                leftPanel.selectPanelToShow(Res.getString("THUMBNAILS_TAB_TITLE"));
             }
         });
         leftPanelMenuGroup.add(bookmarksButton);
@@ -2692,19 +2695,17 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         checkItem.setToolTipText(Res.getString("MENU_CONVERT_NAMED_DEST_DESCR"));
         checkItem.setMnemonic(Res.mnemonicFromRes("MENU_CONVERT_NAMED_DEST_MNEMONIC"));
         checkItem.setSelected(userPrefs.getConvertNamedDestinations());
-        checkItem.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JCheckBoxMenuItem item = (JCheckBoxMenuItem) e.getSource();
-                userPrefs.setConvertNamedDestinations(item.isSelected());
-                JOptionPane.showMessageDialog(JPdfBookmarksGui.this,
-                        Res.getString("CONVERT_NAMED_DEST_MSG"), title,
-                        JOptionPane.WARNING_MESSAGE);
-            }
+        checkItem.addActionListener((ActionEvent e) -> {
+            JCheckBoxMenuItem item1 = (JCheckBoxMenuItem) e.getSource();
+            userPrefs.setConvertNamedDestinations(item1.isSelected());
+            JOptionPane.showMessageDialog(JPdfBookmarksGui.this,
+                    Res.getString("CONVERT_NAMED_DEST_MSG"), title,
+                    JOptionPane.WARNING_MESSAGE);
         });
         //menuTools.add(checkItem);
-
+        
+        // For the sake of compatibilty, this is kept on the macOS version, though the "Preferences" app menu
+        // brings up the same dialog box
         menuTools.addSeparator();
 
         item = menuTools.add(optionsDialogAction);
@@ -2755,16 +2756,12 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
 
         toolbarsPanelsMenu = new JPopupMenu();
         JMenuItem toolbarsManagerItem = new JMenuItem(Res.getString("TAB_TOOLBARS_MANAGER") + "...");
-        toolbarsManagerItem.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                OptionsDlg optionsDlg = new OptionsDlg(JPdfBookmarksGui.this,
-                        true);
-                optionsDlg.setLocationRelativeTo(JPdfBookmarksGui.this);
-                optionsDlg.setVisibleTab(OptionsDlg.TOOLBARS_PANEL);
-                optionsDlg.setVisible(true);
-            }
+        toolbarsManagerItem.addActionListener((ActionEvent e) -> {
+            OptionsDlg optionsDlg = new OptionsDlg(JPdfBookmarksGui.this,
+                    true);
+            optionsDlg.setLocationRelativeTo(JPdfBookmarksGui.this);
+            optionsDlg.setVisibleTab(OptionsDlg.TOOLBARS_PANEL);
+            optionsDlg.setVisible(true);
         });
         toolbarsPanelsMenu.add(toolbarsManagerItem);
 
@@ -2879,7 +2876,12 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         }
     }
 
+    /**
+     * 
+     * @return The main toolbar panel
+     */
     private JPanel createToolbarsPanel() {
+        JButton btn;
 
         JToolBar fileToolbar = new JToolBar();
         fileToolbar.add(openAction);
@@ -2900,20 +2902,16 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         mainToolbars.put(Prefs.SHOW_UNDO_TB, undoToolbar);
 
         navigationToolbar = new JToolBar();
-        JButton btn = navigationToolbar.add(goFirstPageAction);
-        btn = navigationToolbar.add(goPreviousPageAction);
+        navigationToolbar.add(goFirstPageAction);
+        navigationToolbar.add(goPreviousPageAction);
         mainToolbars.put(Prefs.SHOW_NAVIGATION_TB, navigationToolbar);
 
         txtGoToPage = new IntegerTextField(4);
         txtGoToPage.setText("0");
         txtGoToPage.setEnabled(false);
         txtGoToPage.setHorizontalAlignment(JTextField.CENTER);
-        txtGoToPage.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                viewPanel.goToPage(txtGoToPage.getInteger());
-            }
+        txtGoToPage.addActionListener((ActionEvent e) -> {
+            viewPanel.goToPage(txtGoToPage.getInteger());
         });
         navigationToolbar.add(txtGoToPage);
         lblPageOfPages = new JLabel(String.format(" / %5d", 0));
@@ -2959,24 +2957,20 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
 
         JToolBar zoomToolbar = new JToolBar();
         mainToolbars.put(Prefs.SHOW_ZOOM_TB, zoomToolbar);
-        btn = zoomToolbar.add(zoomInAction);
+        zoomToolbar.add(zoomInAction);
         txtZoom = new IntegerTextField(4);
         txtZoom.setText("0");
         txtZoom.setEnabled(false);
         txtZoom.setHorizontalAlignment(JTextField.CENTER);
-        txtZoom.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                float scale = txtZoom.getInteger() / 100f;
-                viewPanel.setTopLeftZoom(-1, -1, scale);
-            }
+        txtZoom.addActionListener((ActionEvent e) -> {
+            float scale = txtZoom.getInteger() / 100f;
+            viewPanel.setTopLeftZoom(-1, -1, scale);
         });
         zoomToolbar.add(txtZoom);
         lblPercent = new JLabel(" % ");
         lblPercent.setEnabled(false);
         zoomToolbar.add(lblPercent);
-        btn = zoomToolbar.add(zoomOutAction);
+        zoomToolbar.add(zoomOutAction);
 
         JToolBar othersToolbar = new JToolBar();
         mainToolbars.put(Prefs.SHOW_OTHERS_TB, othersToolbar);
@@ -3000,6 +2994,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         webToolbar.add(checkUpdatesAction);
         webToolbar.add(goToAuthorBlog);
         webToolbar.add(readOnlineManualAction);
+
         btn = webToolbar.add(donateToProject);
         btn.setVerticalTextPosition(SwingConstants.CENTER);
         btn.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -3017,13 +3012,16 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
 
         return mainToolbarsPanel;
     }
-
-    public void updateToolbars() {
-        for (Map.Entry<String, JToolBar> e : mainToolbars.entrySet()) {
+    
+    /** 
+     * When toolbar visibility changes, this method shows or hides toolbars.
+     */
+    private void updateToolbars() {
+        mainToolbars.entrySet().forEach(e -> {
             JToolBar toolbar = e.getValue();
             String prefsKey = e.getKey();
             toolbar.setVisible(userPrefs.getShowToolbar(prefsKey));
-        }
+        });
 
         boolean foundVisibleToolbar = false;
         for (JToolBar toolbar : mainToolbars.values()) {
@@ -3034,11 +3032,11 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         }
         mainToolbarsPanel.setVisible(foundVisibleToolbar);
 
-        for (Map.Entry<String, JToolBar> e : bookmarksToolbars.entrySet()) {
+        bookmarksToolbars.entrySet().forEach(e -> {
             JToolBar toolbar = e.getValue();
             String prefsKey = e.getKey();
             toolbar.setVisible(userPrefs.getShowToolbar(prefsKey));
-        }
+        });
 
         foundVisibleToolbar = false;
         for (JToolBar toolbar : bookmarksToolbars.values()) {
@@ -3048,9 +3046,8 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
             }
         }
         bookmarksToolbarsPanel.setVisible(foundVisibleToolbar);
-
     }
-
+    
     private JPanel createStatusBar() {
         JPanel statusPanel = new JPanel(new GridLayout(1, 4));
         statusPanel.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));

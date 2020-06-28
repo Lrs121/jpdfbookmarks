@@ -32,11 +32,11 @@ public class OptionsDlg extends javax.swing.JDialog {
     public final static int PROXY_PANEL = 1;
     public final static int TOOLBARS_PANEL = 2;
 
-    private Prefs userPrefs = new Prefs();
-    private SeparatorsPanel separatorsOptions = new SeparatorsPanel(userPrefs);
-    private ConnectionOptionsPanel connectionOptions = new ConnectionOptionsPanel(userPrefs);
-    private ToolbarsOptionsPanel toolbarsOptions = new ToolbarsOptionsPanel(userPrefs);
-    private GeneralOptionsPanel generalOptions = new GeneralOptionsPanel(userPrefs);
+    private final Prefs userPrefs = new Prefs();
+    private final SeparatorsPanel separatorsOptions = new SeparatorsPanel(userPrefs);
+    private final ConnectionOptionsPanel connectionOptions = new ConnectionOptionsPanel(userPrefs);
+    private final ToolbarsOptionsPanel toolbarsOptions = new ToolbarsOptionsPanel(userPrefs);
+    private final GeneralOptionsPanel generalOptions = new GeneralOptionsPanel(userPrefs);
 //    private EncodingOptionsPanel encodingOptions = new EncodingOptionsPanel(userPrefs);
     private JPdfBookmarksGui gui;
 
@@ -49,7 +49,6 @@ public class OptionsDlg extends javax.swing.JDialog {
     public OptionsDlg(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        gui = (JPdfBookmarksGui) parent;
         mainTabPane.addTab(Res.getString("TAB_GENERAL_OPTIONS"), generalOptions);
         mainTabPane.setMnemonicAt(0, Res.mnemonicFromRes("TAB_GENERAL_OPTIONS_MNEMONIC"));
         mainTabPane.addTab(Res.getString("TAB_SEPARATOR_OPTIONS"), separatorsOptions);
@@ -168,42 +167,38 @@ public class OptionsDlg extends javax.swing.JDialog {
 
 	private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
 
-            if (!checkDifferentValuesAndEmptyValues()) {
-                return;
-            }
+                    if (!checkDifferentValuesAndEmptyValues()) {
+                        return;
+                    }
 
-            String pag = separatorsOptions.getPageSeparator();
-            String ind = separatorsOptions.getIndentationString();
-            String sep = separatorsOptions.getAttributesSeparator();
+                    String pag = separatorsOptions.getPageSeparator();
+                    String ind = separatorsOptions.getIndentationString();
+                    String sep = separatorsOptions.getAttributesSeparator();
 
-            userPrefs.setPageSeparator(pag);
-            userPrefs.setIndentationString(ind);
-            userPrefs.setAttributesSeparator(sep);
-            userPrefs.setConvertNamedDestinations(generalOptions.convertNamedDestinations());
-            userPrefs.setUseThousandths(generalOptions.useThousandths());
-            userPrefs.setCharsetEncoding(generalOptions.getCharsetEncoding());
-            userPrefs.setNumClicks(generalOptions.getNumClicks());
+                    userPrefs.setPageSeparator(pag);
+                    userPrefs.setIndentationString(ind);
+                    userPrefs.setAttributesSeparator(sep);
+                    userPrefs.setConvertNamedDestinations(generalOptions.convertNamedDestinations());
+                    userPrefs.setUseThousandths(generalOptions.useThousandths());
+                    userPrefs.setCharsetEncoding(generalOptions.getCharsetEncoding());
+                    userPrefs.setNumClicks(generalOptions.getNumClicks());
 
-            userPrefs.setUseProxy(connectionOptions.useProxy());
-            userPrefs.setProxyType(connectionOptions.getProxyType());
-            userPrefs.setProxyAddress(connectionOptions.getProxyAddress());
-            userPrefs.setProxyPort(connectionOptions.getProxyPort());
+                    userPrefs.setUseProxy(connectionOptions.useProxy());
+                    userPrefs.setProxyType(connectionOptions.getProxyType());
+                    userPrefs.setProxyAddress(connectionOptions.getProxyAddress());
+                    userPrefs.setProxyPort(connectionOptions.getProxyPort());
 
-            userPrefs.setCheckUpdatesOnStart(connectionOptions.checkUpdatesOnStart());
+                    userPrefs.setCheckUpdatesOnStart(connectionOptions.checkUpdatesOnStart());
 
-            userPrefs.setNeverAskWebAccess(connectionOptions.neverAskWebAccess());
+                    userPrefs.setNeverAskWebAccess(connectionOptions.neverAskWebAccess());
 
-            toolbarsOptions.saveToolbarPreferences();
-            // if called from menubar of JPdfBookmarksGui (not on macOS!)
-            // Unfortunately, this means that calling
-            if (gui != null)
-                gui.updateToolbars();
+                    toolbarsOptions.saveToolbarPreferences();
 
-            dispose();
+                    dispose();
 	}//GEN-LAST:event_btnOkActionPerformed
 
 	private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-            dispose();
+                    dispose();
 	}//GEN-LAST:event_btnCancelActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
