@@ -47,7 +47,7 @@ R. M. Fritz, July 1, 2020.
 	DEPENDENCIES
 *******************************************************************************
 
-This software requires a Java Runtime Environment version 6 or later for 
+This software requires a Java Runtime Environment version 9 or later for 
 information on how to install one on your system, or to check if you already
 have it, go to http://www.java.com or search your system's software
 repositories. It uses the following libraries distributed in the lib folder 
