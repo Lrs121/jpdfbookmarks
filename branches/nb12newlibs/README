@@ -33,11 +33,13 @@ This software allows you to create and edit bookmarks on existing pdf files.
 *******************************************************************************
         NOTES FOR THIS BRANCH
 *******************************************************************************
-
-This branch provides a version which builds with the current (as of
-July 1, 2020) version of NetBeans, NetBeans 12.0.  It also provides
-macOS support, using the macOS menu bar and the macOS CMD key (Java
-meta key) for crucial keyboard accelerators.
+This branch of jPdfBookmarks derives from the 2.5.2 release.  It
+provides a version which:
+- builds with the current (as of July 1, 2020) version of NetBeans,
+  NetBeans 12.0.
+- uses the macOS menu bar and keyboard accelerators
+- will update the dependent libraries to current or near-current
+  versions
 
 *******************************************************************************
 	DEPENDENCIES
