@@ -30,6 +30,20 @@ Sections:
 This software allows you to create and edit bookmarks on existing pdf files.
 
 *******************************************************************************
+        NOTES FOR THIS BRANCH
+*******************************************************************************
+
+This branch is an experiment with the "options" menu.  The idea was to
+unify the main window toolbars across all main windows and it works on
+macOS.  Unfortunately, on Windows, it only works in one instance of
+the app, leading to confusing behavior.  This might be fixed, but then
+there's a second problem: it's not clear to me what the behavior of
+the toolbars should be; per-window, per-file, per-app instance, global
+for all app instances...?  So I'm leaving this for the moment as
+partly-finished work.  Possibly I will return to it later. -
+R. M. Fritz, July 1, 2020.
+
+*******************************************************************************
 	DEPENDENCIES
 *******************************************************************************
 
