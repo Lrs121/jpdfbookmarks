@@ -16,6 +16,7 @@ by this project.
 
 Sections:
 - DESCRIPTION
+- NOTES FOR THIS BRANCH
 - DEPENDENCIES
 - HOW TO INSTALL AND UNINSTALL
 - HOW TO EXECUTE
@@ -28,6 +29,15 @@ Sections:
 *******************************************************************************
 
 This software allows you to create and edit bookmarks on existing pdf files.
+
+*******************************************************************************
+        NOTES FOR THIS BRANCH
+*******************************************************************************
+
+This branch provides a version which builds with the current (as of
+July 1, 2020) version of NetBeans, NetBeans 12.0.  It also provides
+macOS support, using the macOS menu bar and the macOS CMD key (Java
+meta key) for crucial keyboard accelerators.
 
 *******************************************************************************
 	DEPENDENCIES
