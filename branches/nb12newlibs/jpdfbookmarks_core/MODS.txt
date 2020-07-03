@@ -6,3 +6,6 @@
 2010-08-20  Hide Bookmarks for fields only support named fields and not
             dictionary fields. Only a single field per action is supoprted for
             hide bookmarks while pdf standard supports arrays of fields.
+
+2020-07-03 rmfritz
+    In JPdfBookmarks.java, Replace OptionBuilder Option.Builder, PosixParser with DefaultParser.

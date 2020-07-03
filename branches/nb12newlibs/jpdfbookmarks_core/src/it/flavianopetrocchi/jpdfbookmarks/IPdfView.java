@@ -29,45 +29,45 @@ import java.io.File;
 import javax.swing.JScrollPane;
 
 public interface IPdfView {
-	
-	public void open(File file) throws Exception;
+        
+        public void open(File file) throws Exception;
         public void open(File file, String password) throws Exception;
         public void reopen(File file) throws Exception;
-	public void close();
+        public void close();
 
-	public void goToFirstPage();
-	public void goToPreviousPage();
-	public void goToPage(int numPage);
-	public void goToNextPage();
-	public void goToLastPage();
+        public void goToFirstPage();
+        public void goToPreviousPage();
+        public void goToPage(int numPage);
+        public void goToNextPage();
+        public void goToLastPage();
 
-//	public void goToBookmark(Bookmark bookmark);
+//      public void goToBookmark(Bookmark bookmark);
 
-	public void setFitNative();
-	public void setFitWidth(int top);
-	public void setFitHeight(int left);
-	public void setFitPage();
-	public void setFitRect(int top, int left, int bottom, int right);
-	public void setFitRect(Rectangle rect);
-	public void setTopLeftZoom(int top, int left, float zoom);
-	
-	public Bookmark getBookmarkFromView();
+        public void setFitNative();
+        public void setFitWidth(int top);
+        public void setFitHeight(int left);
+        public void setFitPage();
+        public void setFitRect(int top, int left, int bottom, int right);
+        public void setFitRect(Rectangle rect);
+        public void setTopLeftZoom(int top, int left, float zoom);
+        
+        public Bookmark getBookmarkFromView();
 
-	public int getNumPages();
-	public FitType getFitType();
-	public int getCurrentPage();
+        public int getNumPages();
+        public FitType getFitType();
+        public int getCurrentPage();
 
-	public void addPageChangedListener(PageChangedListener listener);
-	public void removePageChangedListener(PageChangedListener listener);
+        public void addPageChangedListener(PageChangedListener listener);
+        public void removePageChangedListener(PageChangedListener listener);
 
-	public void addViewChangedListener(ViewChangedListener listener);
-	public void removeViewChangedListener(ViewChangedListener listener);
+        public void addViewChangedListener(ViewChangedListener listener);
+        public void removeViewChangedListener(ViewChangedListener listener);
 
-	public void addTextCopiedListener(TextCopiedListener listener);
-	public void removeTextCopiedListener(TextCopiedListener listener);
+        public void addTextCopiedListener(TextCopiedListener listener);
+        public void removeTextCopiedListener(TextCopiedListener listener);
 
-	public void addRenderingStartListener(RenderingStartListener listener);
-	public void removeRenderingStartListener(RenderingStartListener listener);
+        public void addRenderingStartListener(RenderingStartListener listener);
+        public void removeRenderingStartListener(RenderingStartListener listener);
 
         public void setTextSelectionMode(boolean set);
         public void setConnectToClipboard(Boolean set);

@@ -26,9 +26,7 @@ import java.awt.Component;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -36,8 +34,11 @@ import javax.swing.ListCellRenderer;
 import javax.swing.border.EmptyBorder;
 
 /**
- * The enum contains a complete list of the 140 color names supported by all
- * major browsers.
+ * A list of the 140 W3/X11 color names.
+ * 
+ * See https://www.w3.org/TR/css-color-3/ and https://en.wikipedia.org/wiki/X11_color_names.
+ * 
+ * @author fla
  */
 public enum Colors {
 
@@ -195,7 +196,7 @@ public enum Colors {
 
     /**
      * Return a string presentation of the Color passed as parameter as one of
-     * the names defined by the Colors enum or as an exadecimal value in the
+     * the names defined by the Colors enum or as a hexadecimal value in the
      * format "#RRGGBB".
      *
      * @param color The color to transform to a string.

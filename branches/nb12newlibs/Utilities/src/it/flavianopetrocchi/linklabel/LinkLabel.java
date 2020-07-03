@@ -19,7 +19,6 @@
  * You should have received a copy of the GNU General Public License
  * along with JPdfBookmarks.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.flavianopetrocchi.linklabel;
 
 import java.awt.Desktop;
@@ -41,30 +40,31 @@ import java.net.URI;
 import java.io.File;
 
 /**
-A Java 1.6+ LinkLabel that uses the Desktop class for opening
-the document of interest.
-
-The Desktop.browse(URI) method can be invoked from applications,
-applets and apps. launched using Java Webstart.  In the latter
-two cases, the usual fall-back methods are used for sandboxed apps
-(see the JavaDocs for further details).
-
-While called a 'label', this class actually extends JTextField,
-to easily allow the component to become focusable using keyboard
-navigation.
-
-To successfully browse to a URI for a local File, the file name
-must be constructed using a canonical path.
-
-@author Andrew Thompson
-@version 2008/08/23
+ * A Java 1.6+ LinkLabel that uses the Desktop class for opening the document of
+ * interest.
+ *
+ * The Desktop.browse(URI) method can be invoked from applications, applets and
+ * apps. launched using Java Webstart. In the latter two cases, the usual
+ * fall-back methods are used for sandboxed apps (see the JavaDocs for further
+ * details).
+ *
+ * While called a 'label', this class actually extends JTextField, to easily
+ * allow the component to become focusable using keyboard navigation.
+ *
+ * To successfully browse to a URI for a local File, the file name must be
+ * constructed using a canonical path.
+ *
+ * @author Andrew Thompson
+ * @version 2008/08/23
  */
 public class LinkLabel
         // we extend a JTextField, to get a focusable component
         extends JTextField
         implements MouseListener, FocusListener, ActionListener {
 
-    /** The target or href of this link. */
+    /**
+     * The target or href of this link.
+     */
     private URI target;
     public Color standardColor = new Color(0, 0, 255);
     public Color hoverColor = new Color(255, 0, 0);
@@ -75,42 +75,67 @@ public class LinkLabel
     private Border hoverBorder;
     private Border standardBorder;
 
-    /** Construct a LinkLabel that points to the given target.
-    The URI will be used as the link text.*/
+    /**
+     * Construct a LinkLabel that points to the given target.
+     *
+     * @param target Link text
+     */
     public LinkLabel(URI target) {
         this(target, target.toString());
     }
 
-    /** Construct a LinkLabel that points to the given target,
-    and displays the text to the user. */
+    /**
+     * Construct a LinkLabel that points to the given target, and displays the
+     * text to the user.
+     *
+     * @param target target URI
+     * @param text
+     */
     public LinkLabel(URI target, String text) {
         super(text);
         this.target = target;
     }
 
-    /* Set the active color for this link (default is purple). */
+    /**
+     * Set the active color for this link (default is purple).
+     *
+     * @param active
+     */
     public void setActiveColor(Color active) {
         activeColor = active;
     }
 
-    /* Set the hover/focused color for this link (default is red). */
+    /**
+     * Set the hover/focused color for this link (default is red).
+     *
+     * @param hover
+     */
     public void setHoverColor(Color hover) {
         hoverColor = hover;
     }
 
-    /* Set the standard (non-focused, non-active) color for this
-    link (default is blue). */
+    /**
+     * Set the standard (non-focused, non-active) color for this link (default
+     * is blue).
+     *
+     * @param standard
+     */
     public void setStandardColor(Color standard) {
         standardColor = standard;
     }
 
-    /** Determines whether the */
+    /**
+     * Determines whether the link is underlined
+     *
+     * @param underlineVisible
+     */
     public void setUnderlineVisible(boolean underlineVisible) {
         this.underlineVisible = underlineVisible;
     }
 
-    /* Add the listeners, configure the field to look and act
-    like a link. */
+    /**
+     * Add the listeners, configure the field to look and act like a link.
+     */
     public void init() {
         this.addMouseListener(this);
         this.addFocusListener(this);
@@ -134,12 +159,13 @@ public class LinkLabel
         setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
-    /** Browse to the target URI using the Desktop.browse(URI)
-    method.  For visual indication, change to the active color
-    at method start, and return to the standard color once complete.
-    This is usually so fast that the active color does not appear,
-    but it will take longer if there is a problem finding/loading
-    the browser or URI (e.g. for a File). */
+    /**
+     * Browse to the target URI using the Desktop.browse(URI) method. For visual
+     * indication, change to the active color at method start, and return to the
+     * standard color once complete. This is usually so fast that the active
+     * color does not appear, but it will take longer if there is a problem
+     * finding/loading the browser or URI (e.g. for a File).
+     */
     public void browse() {
         setForeground(activeColor);
         setBorder(activeBorder);
@@ -152,41 +178,66 @@ public class LinkLabel
         setBorder(standardBorder);
     }
 
-    /** Browse to the target. */
+    /**
+     * Browse to the target.
+     *
+     * @param ae ActionEvent
+     */
+    @Override
     public void actionPerformed(ActionEvent ae) {
         browse();
     }
 
-    /** Browse to the target. */
+    /**
+     * Browse to the target.
+     *
+     * @param me MouseEvent
+     */
+    @Override
     public void mouseClicked(MouseEvent me) {
         browse();
     }
 
-    /** Set the color to the hover color. */
+    /**
+     * Set the color to the hover color.
+     * @param me MouseEvent
+     */
+    @Override
     public void mouseEntered(MouseEvent me) {
         setForeground(hoverColor);
         setBorder(hoverBorder);
     }
 
-    /** Set the color to the standard color. */
+    /**
+     * Set the color to the standard color.
+     */
+    @Override
     public void mouseExited(MouseEvent me) {
         setForeground(standardColor);
         setBorder(standardBorder);
     }
 
+    @Override
     public void mouseReleased(MouseEvent me) {
     }
 
+    @Override
     public void mousePressed(MouseEvent me) {
     }
 
-    /** Set the color to the standard color. */
+    /**
+     * Set the color to the standard color.
+     */
+    @Override
     public void focusLost(FocusEvent fe) {
         setForeground(standardColor);
         setBorder(standardBorder);
     }
 
-    /** Set the color to the hover color. */
+    /**
+     * Set the color to the hover color.
+     */
+    @Override
     public void focusGained(FocusEvent fe) {
         setForeground(hoverColor);
         setBorder(hoverBorder);

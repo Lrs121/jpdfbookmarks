@@ -24,8 +24,6 @@ package it.flavianopetrocchi.colors;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Rectangle;
 import javax.swing.Icon;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -34,6 +32,11 @@ import javax.swing.colorchooser.AbstractColorChooserPanel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+/**
+ * A wrapper for the Swing JColorChooser class, adding a list of the w3/X11 colors.
+ * 
+ * @author fla
+ */
 public class ColorsListPanel extends AbstractColorChooserPanel 
 		implements ListSelectionListener {
 	private JList list;
@@ -73,6 +76,7 @@ public class ColorsListPanel extends AbstractColorChooserPanel
 		return null;
 	}
 
+        @Override
 	public void valueChanged(ListSelectionEvent e) {
 		Colors item = (Colors) list.getSelectedValue();
 		getColorSelectionModel().setSelectedColor(item.getColor());

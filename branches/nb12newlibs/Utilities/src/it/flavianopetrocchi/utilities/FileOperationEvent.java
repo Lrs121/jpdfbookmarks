@@ -25,29 +25,29 @@ package it.flavianopetrocchi.utilities;
 import java.util.EventObject;
 
 public class FileOperationEvent extends EventObject {
-	public enum Operation {
-		FILE_OPENED,
+        public enum Operation {
+                FILE_OPENED,
                 FILE_READONLY,
-		FILE_CLOSED,
-		FILE_SAVED,
-		FILE_CHANGED
-	}
+                FILE_CLOSED,
+                FILE_SAVED,
+                FILE_CHANGED
+        }
 
-	private String pathToFile;
-	private Operation op;
+        private String pathToFile;
+        private Operation op;
 
 
-	public FileOperationEvent(Object source, String pathToFile, Operation op) {
-		super(source);
-		this.pathToFile = pathToFile;
-		this.op = op;
-	}
+        public FileOperationEvent(Object source, String pathToFile, Operation op) {
+                super(source);
+                this.pathToFile = pathToFile;
+                this.op = op;
+        }
 
-	public String getPathToFile() {
-		return pathToFile;
-	}
+        public String getPathToFile() {
+                return pathToFile;
+        }
 
-	public Operation getOperation() {
-		return op;
-	}
+        public Operation getOperation() {
+                return op;
+        }
 }
