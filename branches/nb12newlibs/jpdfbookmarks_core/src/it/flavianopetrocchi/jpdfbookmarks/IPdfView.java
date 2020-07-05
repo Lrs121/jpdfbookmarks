@@ -28,6 +28,13 @@ import java.awt.Rectangle;
 import java.io.File;
 import javax.swing.JScrollPane;
 
+/**
+ * An interface to a PDF rendering class. This is provided so that one PDF rendering system can be swapped
+ * for another.
+ * 
+ * @author fla
+ * @version $Id$
+ */
 public interface IPdfView {
         
         public void open(File file) throws Exception;

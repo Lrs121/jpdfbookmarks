@@ -2,13 +2,16 @@
 package it.flavianopetrocchi.jpdfbookmarks;
 
 import java.awt.Font;
-import javax.swing.JButton;
 import org.jpedal.PdfDecoder;
 import org.jpedal.examples.simpleviewer.Values;
 import org.jpedal.examples.simpleviewer.gui.swing.SwingThumbnailPanel;
 import org.jpedal.objects.PdfPageData;
 
-
+/**
+ * A panel of Tumbnails from the PDF file we are working with.
+ * 
+ * @author fla
+ */
 public class ThumbnailsPanel extends SwingThumbnailPanel implements PageChangedListener {
 
     public ThumbnailsPanel(Values commonValues, PdfDecoder decoder) {

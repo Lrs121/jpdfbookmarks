@@ -43,6 +43,8 @@ public class AboutBox extends javax.swing.JDialog {
 
     /** 
      * Create jPdfBookmarks' "About" box.
+     * 
+     * @author fla
      */
     public AboutBox(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
