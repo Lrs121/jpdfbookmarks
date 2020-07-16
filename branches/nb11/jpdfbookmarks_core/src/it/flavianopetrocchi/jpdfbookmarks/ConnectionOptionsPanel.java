@@ -24,6 +24,11 @@ package it.flavianopetrocchi.jpdfbookmarks;
 import it.flavianopetrocchi.utilities.Ut;
 import javax.swing.ButtonGroup;
 
+/**
+ * Internet connections settings panel, one of the panels displayed by OptionsDlg.
+ * 
+ * @author fla
+ */
 public class ConnectionOptionsPanel extends javax.swing.JPanel {
 
     Prefs userPrefs;

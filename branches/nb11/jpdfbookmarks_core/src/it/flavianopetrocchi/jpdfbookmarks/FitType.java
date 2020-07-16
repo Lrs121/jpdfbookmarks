@@ -23,6 +23,12 @@ package it.flavianopetrocchi.jpdfbookmarks;
 
 import it.flavianopetrocchi.jpdfbookmarks.bookmark.BookmarkType;
 
+/**
+ * An enumeration of PDF bookmark (outline) destinations as set out in the PDF
+ * 1.7 (2008) standard §12.3.2.2.)
+ *
+ * @author fla
+ */
 public enum FitType {
 
     FitNative,

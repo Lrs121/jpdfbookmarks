@@ -25,7 +25,11 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-/** Basic CursorToolkit that swallows mouseclicks */
+/** 
+ * Basic CursorToolkit that swallows mouse clicks.
+ *
+ * @author fla
+ */
 public class CursorToolkit {
 
     private final static MouseAdapter mouseAdapter = new MouseAdapter() {

@@ -23,9 +23,10 @@ package it.flavianopetrocchi.jpdfbookmarks;
 
 import javax.swing.JOptionPane;
 
-/*
+/**
   * Options/Preferences dialog
-  * @author Flaviano Petrocchi
+  * 
+  * @author fla
   */
 public class OptionsDlg extends javax.swing.JDialog {
     public final static int GENERAL_PANEL = 0;

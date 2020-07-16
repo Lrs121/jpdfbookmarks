@@ -19,7 +19,6 @@
  * You should have received a copy of the GNU General Public License
  * along with JPdfBookmarks.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.flavianopetrocchi.jpdfbookmarks;
 
 import it.flavianopetrocchi.components.collapsingpanel.CollapsingPanel;
@@ -32,96 +31,98 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 
 /**
- *This class contains all the preferences for the program.
+ * This class contains all the keys of the preferences for the program,
+ * connecting the names of the preferences with Strings.
  */
 public class Prefs {
 
-	private Preferences userPrefs = Preferences.userNodeForPackage(getClass());
+    private Preferences userPrefs = Preferences.userNodeForPackage(getClass());
 
-        private final String GPL_ACCEPTED = "GPL_ACCEPTED";
+    private final String GPL_ACCEPTED = "GPL_ACCEPTED";
 
-	private final String WINDOW_STATE = "WINDOW_STATE";
-	private final String MAXIMIZED = "MAXIMIZED";
-	private final String LAF = "LAF";
-	private final String LOCATION_X = "LOCATION_X";
-	private final String LOCATION_Y = "LOCATION_Y";
-	private final String SPLITTER_POS = "SPLITTER_POS";
-        private final String COLLAPSING_PANEL_STATE = "COLLAPSING_PANEL_STATE";
-	private final String SIZE_WIDTH = "SIZE_WIDTH";
-	private final String SIZE_HEIGHT = "SIZE_HEIGHT";
-	private final String LAST_DIRECTORY = "LAST_DIRECTORY";
-	private final String CONVERT_NAMED_DEST = "CONVERT_NAMED_DEST";
-	private final String USE_THOUSANDTHS = "USE_THOUSANDTHS";
-	private final String PAGE_SEPARATOR = "PAGE_SEPARATOR";
-	private final String INDENT_STRING = "INDENT_STRING";
-	private final String ATTRIBUTES_SEPARATOR = "ATTRIBUTES_SEPARATOR";
-	private final String RECENT = "RECENT";
-	private final int RECENT_FILES_NUM = 10;
-	private final String PROXY_ADDRESS = "PROXY_ADDRESS";
-	private final String PROXY_PORT = "PROXY_PORT";
-	private final String PROXY_TYPE = "PROXY_TYPE";
-	private final String USE_PROXY = "USE_PROXY";
-	private final String CHECK_UPDATES_ON_START = "CHECK_UPDATES_ON_START";
-        private final String CONFIRM_WEB_ACCESS = "CONFIRM_WEB_ACCESS";
-        private final String PANEL_TO_SHOW = "PANEL_TO_SHOW";
+    private final String WINDOW_STATE = "WINDOW_STATE";
+    private final String MAXIMIZED = "MAXIMIZED";
+    private final String LAF = "LAF";
+    private final String LOCATION_X = "LOCATION_X";
+    private final String LOCATION_Y = "LOCATION_Y";
+    private final String SPLITTER_POS = "SPLITTER_POS";
+    private final String COLLAPSING_PANEL_STATE = "COLLAPSING_PANEL_STATE";
+    private final String SIZE_WIDTH = "SIZE_WIDTH";
+    private final String SIZE_HEIGHT = "SIZE_HEIGHT";
+    private final String LAST_DIRECTORY = "LAST_DIRECTORY";
+    private final String CONVERT_NAMED_DEST = "CONVERT_NAMED_DEST";
+    private final String USE_THOUSANDTHS = "USE_THOUSANDTHS";
+    private final String PAGE_SEPARATOR = "PAGE_SEPARATOR";
+    private final String INDENT_STRING = "INDENT_STRING";
+    private final String ATTRIBUTES_SEPARATOR = "ATTRIBUTES_SEPARATOR";
+    private final String RECENT = "RECENT";
+    private final int RECENT_FILES_NUM = 10;
+    private final String PROXY_ADDRESS = "PROXY_ADDRESS";
+    private final String PROXY_PORT = "PROXY_PORT";
+    private final String PROXY_TYPE = "PROXY_TYPE";
+    private final String USE_PROXY = "USE_PROXY";
+    private final String CHECK_UPDATES_ON_START = "CHECK_UPDATES_ON_START";
+    private final String CONFIRM_WEB_ACCESS = "CONFIRM_WEB_ACCESS";
+    private final String PANEL_TO_SHOW = "PANEL_TO_SHOW";
 
-        public static final String SHOW_FILE_TB = "SHOW_FILE_TB";
-        public static final String SHOW_FITTYPE_TB = "SHOW_FITTYPE_TB";
-        public static final String SHOW_ZOOM_TB = "SHOW_ZOOM_TB";
-        public static final String SHOW_NAVIGATION_TB = "SHOW_NAVIGATION_TB";
-        public static final String SHOW_OTHERS_TB = "SHOW_OTHERS_TB";
-        public static final String SHOW_WEB_TB = "SHOW_WEB_TB";
-        
-        public static final String SHOW_ADD_TB = "SHOW_ADD_TB";
-        public static final String SHOW_CHANGE_TB = "SHOW_CHANGE_TB";
-        public static final String SHOW_STYLE_TB = "SHOW_STYLE_TB";
-        public static final String SHOW_UNDO_TB = "SHOW_UNDO_TB";
-        public static final String SHOW_SETDEST_TB = "SHOW_SETDEST_TB";
+    public static final String SHOW_FILE_TB = "SHOW_FILE_TB";
+    public static final String SHOW_FITTYPE_TB = "SHOW_FITTYPE_TB";
+    public static final String SHOW_ZOOM_TB = "SHOW_ZOOM_TB";
+    public static final String SHOW_NAVIGATION_TB = "SHOW_NAVIGATION_TB";
+    public static final String SHOW_OTHERS_TB = "SHOW_OTHERS_TB";
+    public static final String SHOW_WEB_TB = "SHOW_WEB_TB";
 
-        public static final String CHARSET_ENCODING = "CHARSET_ENCODING";
+    public static final String SHOW_ADD_TB = "SHOW_ADD_TB";
+    public static final String SHOW_CHANGE_TB = "SHOW_CHANGE_TB";
+    public static final String SHOW_STYLE_TB = "SHOW_STYLE_TB";
+    public static final String SHOW_UNDO_TB = "SHOW_UNDO_TB";
+    public static final String SHOW_SETDEST_TB = "SHOW_SETDEST_TB";
 
-        public static final String NUM_CLICKS = "NUM_CLICKS";
+    public static final String CHARSET_ENCODING = "CHARSET_ENCODING";
 
-        private Dimension screenSize = null;
+    public static final String NUM_CLICKS = "NUM_CLICKS";
 
-         /**
-          * Empty constructor. It's a really simple class.
-          */
-        Prefs() {}
+    private Dimension screenSize = null;
 
-        public String getPanelToShow() {
-            return userPrefs.get(PANEL_TO_SHOW, Res.getString("BOOKMARKS_TAB_TITLE"));
-        }
+    /**
+     * Empty constructor. It's a really simple class.
+     */
+    Prefs() {
+    }
 
-        public void setPanelToShow(String panelName) {
-            userPrefs.put(PANEL_TO_SHOW, panelName);
-        }
+    public String getPanelToShow() {
+        return userPrefs.get(PANEL_TO_SHOW, Res.getString("BOOKMARKS_TAB_TITLE"));
+    }
 
-        public int getCollapsingPanelState() {
-            return userPrefs.getInt(COLLAPSING_PANEL_STATE,
-                    CollapsingPanel.PANEL_OPENED);
-        }
+    public void setPanelToShow(String panelName) {
+        userPrefs.put(PANEL_TO_SHOW, panelName);
+    }
 
-        public void setCollapsingPanelState(int state) {
-            userPrefs.putInt(COLLAPSING_PANEL_STATE, state);
-        }
+    public int getCollapsingPanelState() {
+        return userPrefs.getInt(COLLAPSING_PANEL_STATE,
+                CollapsingPanel.PANEL_OPENED);
+    }
 
-        public String getCharsetEncoding() {
-            return userPrefs.get(CHARSET_ENCODING,
-                    Charset.defaultCharset().displayName());
-        }
+    public void setCollapsingPanelState(int state) {
+        userPrefs.putInt(COLLAPSING_PANEL_STATE, state);
+    }
 
-        public void setCharsetEncoding(String value) {
-            userPrefs.put(CHARSET_ENCODING, value);
-        }
+    public String getCharsetEncoding() {
+        return userPrefs.get(CHARSET_ENCODING,
+                Charset.defaultCharset().displayName());
+    }
 
-        public boolean getShowToolbar(String name) {
-            return userPrefs.getBoolean(name, true);
-        }
+    public void setCharsetEncoding(String value) {
+        userPrefs.put(CHARSET_ENCODING, value);
+    }
 
-        public void setShowToolbar(String name, boolean value) {
-            userPrefs.putBoolean(name, value);
-        }
+    public boolean getShowToolbar(String name) {
+        return userPrefs.getBoolean(name, true);
+    }
+
+    public void setShowToolbar(String name, boolean value) {
+        userPrefs.putBoolean(name, value);
+    }
 
     public boolean getGplAccepted() {
         return userPrefs.getBoolean(GPL_ACCEPTED, false);
@@ -205,11 +206,11 @@ public class Prefs {
 
     public void addRecentFile(String path) {
         String[] filePaths = getRecentFiles();
-            for (String filePath : filePaths) {
-                if (path.equals(filePath)) {
-                    return;
-                }
+        for (String filePath : filePaths) {
+            if (path.equals(filePath)) {
+                return;
             }
+        }
         userPrefs.put(RECENT + "0", path);
         for (int i = 1; i < filePaths.length; i++) {
             userPrefs.put(RECENT + String.valueOf(i), filePaths[i - 1]);
@@ -322,10 +323,9 @@ public class Prefs {
     int getNumClicks() {
         return userPrefs.getInt(NUM_CLICKS, 2);
     }
-    
+
     void setNumClicks(int n) {
         userPrefs.putInt(NUM_CLICKS, n);
     }
-
 
 }

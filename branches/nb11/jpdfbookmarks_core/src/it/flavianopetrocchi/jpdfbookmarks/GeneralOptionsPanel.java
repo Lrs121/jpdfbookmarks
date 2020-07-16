@@ -4,6 +4,11 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import javax.swing.JOptionPane;
 
+/**
+ * The general options panel of OptionsDlg.
+ * 
+ * @author fla
+ */
 public class GeneralOptionsPanel extends javax.swing.JPanel {
 
     Prefs userPrefs;

@@ -30,19 +30,37 @@ import javax.swing.JOptionPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
+/**
+ * Responds to clicks on the links in the "About" and "License" dialog boxes
+ *
+ * @author fla
+ */
 public class MyHyperlinkListener implements HyperlinkListener {
+
     private Component parent;
 
     public MyHyperlinkListener(Component dialogsParent) {
         parent = dialogsParent;
     }
 
+    /**
+     * If a link is clicked, invoke the "follow" method.
+     *
+     * @param e
+     */
+    @Override
     public void hyperlinkUpdate(HyperlinkEvent e) {
         if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
             goToWebLink(e.getURL().toString());
         }
     }
 
+    /**
+     * Ask if the user wants to launch the browser and launch it if the answer
+     * is yes.
+     *
+     * @param uri
+     */
     public void goToWebLink(String uri) {
         int answer = JOptionPane.showConfirmDialog(parent,
                 Res.getString("MSG_LAUNCH_BROWSER"), JPdfBookmarks.APP_NAME,

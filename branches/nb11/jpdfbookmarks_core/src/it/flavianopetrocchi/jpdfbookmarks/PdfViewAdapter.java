@@ -27,12 +27,10 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
@@ -41,8 +39,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -53,15 +49,21 @@ import javax.swing.SwingUtilities;
 //import org.icepdf.core.pobjects.Page;
 //import org.icepdf.core.util.GraphicsRenderingHints;
 
+/**
+ * Outline of a class apparently intended to replace JPedal with IcePDF.
+ * This class is apparently never instantiated.
+ *
+ * @author fla
+ */
 public class PdfViewAdapter extends JScrollPane implements IPdfView {
 
     // <editor-fold defaultstate="collapsed" desc="Members">
-    private ArrayList<PageChangedListener> pageChangedListeners =
-            new ArrayList<PageChangedListener>();
-    private ArrayList<ViewChangedListener> viewChangedListeners =
-            new ArrayList<ViewChangedListener>();
-    private ArrayList<RenderingStartListener> renderingStartListeners =
-            new ArrayList<RenderingStartListener>();
+    private ArrayList<PageChangedListener> pageChangedListeners
+            = new ArrayList<PageChangedListener>();
+    private ArrayList<ViewChangedListener> viewChangedListeners
+            = new ArrayList<ViewChangedListener>();
+    private ArrayList<RenderingStartListener> renderingStartListeners
+            = new ArrayList<RenderingStartListener>();
     private int top = -1;
     private int left = -1;
     private int bottom = -1;
@@ -81,7 +83,6 @@ public class PdfViewAdapter extends JScrollPane implements IPdfView {
     private float oldScale;
     volatile boolean painting = false;
     private IBookmarksConverter converter = null;// </editor-fold>
-
 
     public PdfViewAdapter() {
 //		setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_ALWAYS);
@@ -212,7 +213,7 @@ public class PdfViewAdapter extends JScrollPane implements IPdfView {
     }
 
     public int getNumPages() {
-        if (converter !=null) {
+        if (converter != null) {
             numberOfPages = converter.getCountOfPages();
         }
         return numberOfPages;
@@ -285,22 +286,22 @@ public class PdfViewAdapter extends JScrollPane implements IPdfView {
 
         switch (fitType) {
             case FitWidth:
-                scale = (float) viewport.getWidth() /
-                        mediaBox.getWidth();
+                scale = (float) viewport.getWidth()
+                        / mediaBox.getWidth();
                 break;
             case FitHeight:
-                scale = (float) viewport.getHeight() /
-                        mediaBox.getHeight();
+                scale = (float) viewport.getHeight()
+                        / mediaBox.getHeight();
                 break;
             case FitNative:
                 scale = 1.0f;
                 break;
             case FitRect:
                 if (rect != null && drawingComplete) {
-                    float scaleWidth = (float) viewport.getWidth() /
-                            rect.width;
-                    float scaleHeight = (float) viewport.getHeight() /
-                            rect.height;
+                    float scaleWidth = (float) viewport.getWidth()
+                            / rect.width;
+                    float scaleHeight = (float) viewport.getHeight()
+                            / rect.height;
                     scale = Math.min(scaleWidth, scaleHeight);
                 } else {
 //					float scaleWidth = (float) viewport.getWidth() /
@@ -311,10 +312,10 @@ public class PdfViewAdapter extends JScrollPane implements IPdfView {
                 }
                 break;
             case FitPage:
-                float scaleWidth = (float) viewport.getWidth() /
-                        mediaBox.getWidth();
-                float scaleHeight = (float) viewport.getHeight() /
-                        mediaBox.getHeight();
+                float scaleWidth = (float) viewport.getWidth()
+                        / mediaBox.getWidth();
+                float scaleHeight = (float) viewport.getHeight()
+                        / mediaBox.getHeight();
                 scale = Math.min(scaleWidth, scaleHeight);
                 break;
         }
@@ -332,28 +333,28 @@ public class PdfViewAdapter extends JScrollPane implements IPdfView {
         Point pt = viewport.getViewPosition();
         switch (bookmark.getType()) {
             case FitWidth:
-                bookmark.setTop(Math.round(mediaBox.getHeight() -
-                        (pt.y / scale)));
+                bookmark.setTop(Math.round(mediaBox.getHeight()
+                        - (pt.y / scale)));
                 bookmark.setThousandthsTop(
                         Bookmark.thousandthsVertical(bookmark.getTop(),
-                        mediaBox.getHeight()));
+                                mediaBox.getHeight()));
                 break;
             case FitHeight:
                 bookmark.setLeft(Math.round(pt.x / scale));
                 bookmark.setThousandthsLeft(
                         Bookmark.thousandthsHorizontal(bookmark.getLeft(),
-                        mediaBox.getWidth()));
+                                mediaBox.getWidth()));
                 break;
             case TopLeftZoom:
-                bookmark.setTop(Math.round(mediaBox.getHeight() -
-                        (pt.y / scale)));
+                bookmark.setTop(Math.round(mediaBox.getHeight()
+                        - (pt.y / scale)));
                 bookmark.setThousandthsTop(
                         Bookmark.thousandthsVertical(bookmark.getTop(),
-                        mediaBox.getHeight()));
+                                mediaBox.getHeight()));
                 bookmark.setLeft(Math.round(pt.x / scale));
                 bookmark.setThousandthsLeft(
                         Bookmark.thousandthsHorizontal(bookmark.getLeft(),
-                        mediaBox.getWidth()));
+                                mediaBox.getWidth()));
                 bookmark.setZoom(scale);
                 break;
             case FitRect:
@@ -364,20 +365,20 @@ public class PdfViewAdapter extends JScrollPane implements IPdfView {
                     bookmark.setLeft(Math.round(p.x / f));
                     bookmark.setThousandthsLeft(
                             Bookmark.thousandthsHorizontal(bookmark.getLeft(),
-                            mediaBox.getWidth()));
+                                    mediaBox.getWidth()));
                     bookmark.setTop(Math.round(mediaBox.getHeight() - Math.round(p.y / f)));
                     bookmark.setThousandthsTop(
                             Bookmark.thousandthsVertical(bookmark.getTop(),
-                            mediaBox.getHeight()));
+                                    mediaBox.getHeight()));
                     bookmark.setRight(Math.round(p.x / f) + Math.round(d.width / f));
                     bookmark.setThousandthsRight(
                             Bookmark.thousandthsHorizontal(bookmark.getRight(),
-                            mediaBox.getWidth()));
-                    bookmark.setBottom(Math.round(mediaBox.getHeight() -
-                            (Math.round(p.y / f) + Math.round(d.height / f))));
+                                    mediaBox.getWidth()));
+                    bookmark.setBottom(Math.round(mediaBox.getHeight()
+                            - (Math.round(p.y / f) + Math.round(d.height / f))));
                     bookmark.setThousandthsBottom(
                             Bookmark.thousandthsVertical(bookmark.getBottom(),
-                            mediaBox.getWidth()));
+                                    mediaBox.getWidth()));
                 }
                 break;
         }
@@ -394,22 +395,22 @@ public class PdfViewAdapter extends JScrollPane implements IPdfView {
 
         switch (fitType) {
             case FitWidth:
-                viewHeight = Math.round(scaledMediaBox.getHeight() +
-                        viewport.getHeight());
+                viewHeight = Math.round(scaledMediaBox.getHeight()
+                        + viewport.getHeight());
                 break;
             case FitHeight:
-                viewWidth = Math.round(scaledMediaBox.getWidth()) +
-                        viewport.getWidth();
+                viewWidth = Math.round(scaledMediaBox.getWidth())
+                        + viewport.getWidth();
                 break;
             case FitPage:
                 break;
             case FitNative:
             case FitRect:
             case TopLeftZoom:
-                viewWidth = viewport.getWidth() +
-                        Math.round(scaledMediaBox.getWidth());
-                viewHeight = viewport.getHeight() +
-                        Math.round(scaledMediaBox.getHeight());
+                viewWidth = viewport.getWidth()
+                        + Math.round(scaledMediaBox.getWidth());
+                viewHeight = viewport.getHeight()
+                        + Math.round(scaledMediaBox.getHeight());
                 break;
         }
 
@@ -440,8 +441,8 @@ public class PdfViewAdapter extends JScrollPane implements IPdfView {
                     movePanel(Math.round(rect.x * scale),
                             Math.round(rect.y * scale));
                 } else {
-//					movePanel(Math.round(left * scale),
-//							Math.round((mediaBox.getHeight() - top) * scale));
+//                  movePanel(Math.round(left * scale),
+//                  Math.round((mediaBox.getHeight() - top) * scale));
                 }
                 break;
             case TopLeftZoom:
@@ -584,7 +585,6 @@ public class PdfViewAdapter extends JScrollPane implements IPdfView {
 
             calcScaleFactor();
 
-
             if (oldScale != scale || currentPage != oldPage || img == null) {
                 CursorToolkit.startWaitCursor(PdfViewAdapter.this);
                 try {
@@ -721,7 +721,4 @@ public class PdfViewAdapter extends JScrollPane implements IPdfView {
         }
     }
 
-
-
 }
-

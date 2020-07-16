@@ -26,11 +26,9 @@ import it.flavianopetrocchi.jpdfbookmarks.bookmark.Bookmark;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Enumeration;
-import java.util.NoSuchElementException;
-import java.util.Stack;
 
 /**
- * This class implements the --dump functionality of JPdfBookmarks.
+ * Dump (output) the outline from a PDF file to a text file.
  */
 public class Dumper extends OutlinePresentation {
 

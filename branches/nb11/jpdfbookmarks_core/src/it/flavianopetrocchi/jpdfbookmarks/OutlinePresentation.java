@@ -24,9 +24,11 @@ package it.flavianopetrocchi.jpdfbookmarks;
 import it.flavianopetrocchi.jpdfbookmarks.bookmark.IBookmarksConverter;
 
 /**
- * This is parent class for dumper and applier contains parameters to read or
- * create a bookmarks.txt file.
- * 
+ * A framework class for dumping (saving) and applying (loading) bookmarks to
+ * and from a text file.
+ *
+ * @author fla
+ *
  */
 public abstract class OutlinePresentation {
 
@@ -71,8 +73,7 @@ public abstract class OutlinePresentation {
     }
 
     /**
-     * Create an OutlinePresentation object from the file passed as
-     * argument.
+     * Create an OutlinePresentation object from the file passed as argument.
      *
      * @param pdf Bookmarks will be processed from this file.
      */

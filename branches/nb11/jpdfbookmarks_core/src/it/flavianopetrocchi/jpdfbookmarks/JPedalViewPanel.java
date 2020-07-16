@@ -66,6 +66,11 @@ import org.jpedal.grouping.PdfGroupingAlgorithms;
 import org.jpedal.objects.PdfPageData;
 import org.jpedal.utils.sleep;
 
+/**
+ * JPedal-based PDF viewer.
+ * 
+ * @author fla
+ */
 public class JPedalViewPanel extends JScrollPane implements IPdfView {
 
     // <editor-fold defaultstate="collapsed" desc="Members">

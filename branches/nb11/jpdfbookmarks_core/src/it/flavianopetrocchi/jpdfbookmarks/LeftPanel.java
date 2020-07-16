@@ -1,4 +1,3 @@
-
 package it.flavianopetrocchi.jpdfbookmarks;
 
 import it.flavianopetrocchi.components.collapsingpanel.CollapsingPanel;
@@ -7,7 +6,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
-
+/**
+ * Left-hand panel of the main window, displaying alternately the document
+ * outline (bookmarks) or the document thumbnails.
+ *
+ * @author fla
+ */
 public class LeftPanel extends CollapsingPanel {
 
     JPanel bookmarksPanel;

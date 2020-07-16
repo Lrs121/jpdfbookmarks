@@ -23,6 +23,11 @@ package it.flavianopetrocchi.jpdfbookmarks;
 
 import java.util.EventObject;
 
+/**
+ * Sent when the currently displayed page is changed.
+ * 
+ * @author fla
+ */
 public class PageChangedEvent extends EventObject {
 
     private boolean hasNext;

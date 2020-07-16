@@ -33,7 +33,11 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-
+/**
+ * Display the app's "About" box.
+ * 
+ * @author fla
+ */
 public class AboutBox extends javax.swing.JDialog {
 
     private URI homePage;
@@ -43,6 +47,8 @@ public class AboutBox extends javax.swing.JDialog {
 
     /** 
      * Create jPdfBookmarks' "About" box.
+     * @param parent
+     * @param modal
      */
     public AboutBox(java.awt.Frame parent, boolean modal) {
         super(parent, modal);

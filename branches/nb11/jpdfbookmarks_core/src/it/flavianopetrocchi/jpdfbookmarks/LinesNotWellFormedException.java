@@ -23,18 +23,25 @@ package it.flavianopetrocchi.jpdfbookmarks;
 
 import java.util.HashMap;
 
+/**
+ * An internal exception class, which is apparently unused.
+ * 
+ * @author fla
+ */
 public class LinesNotWellFormedException extends Exception {
 
-    HashMap<Integer, String> lines = new HashMap<Integer, String>();
+    HashMap<Integer, String> lines = new HashMap<>();
 
     /**
      * Creates a new instance of <code>LinesNotWellFormedException</code> without detail message.
+     * @param lines
      */
     public LinesNotWellFormedException(HashMap<Integer, String> lines) {
     }
 
     /**
      * Constructs an instance of <code>LinesNotWellFormedException</code> with the specified detail message.
+     * @param lines
      * @param msg the detail message.
      */
     public LinesNotWellFormedException(HashMap<Integer, String> lines, String msg) {

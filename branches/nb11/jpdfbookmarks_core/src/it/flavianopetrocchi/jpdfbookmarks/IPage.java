@@ -24,7 +24,17 @@ package it.flavianopetrocchi.jpdfbookmarks;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * A simple interface to a PDF page rendering. This is apparently never used. – RMFritz
+ * 
+ * @author fla
+ */
 public interface IPage {
+    /**
+     * 
+     * @param scale
+     * @return 
+     */
     public BufferedImage getImage(float scale);
     public PageDimension getSize(float scale);
 }

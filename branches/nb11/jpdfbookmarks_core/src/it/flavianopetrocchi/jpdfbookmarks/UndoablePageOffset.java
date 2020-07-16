@@ -29,13 +29,13 @@ import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
-public class UnboablePageOffset extends AbstractUndoableEdit {
+public class UndoablePageOffset extends AbstractUndoableEdit {
 
     private DefaultTreeModel treeModel;
     TreePath[] paths;
     private int offset;
 
-    public UnboablePageOffset(DefaultTreeModel model,
+    public UndoablePageOffset(DefaultTreeModel model,
             TreePath[] selectedPaths, int offset) {
         this.treeModel = model;
         paths = selectedPaths;

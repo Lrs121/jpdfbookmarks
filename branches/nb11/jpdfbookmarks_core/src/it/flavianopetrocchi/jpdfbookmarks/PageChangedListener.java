@@ -26,7 +26,11 @@ package it.flavianopetrocchi.jpdfbookmarks;
 
 import java.util.EventListener;
 
-
+/**
+ * A superclass for PageChangedEvent listeners.
+ * 
+ * @author fla
+ */
 public interface PageChangedListener extends EventListener {
 	public void pageChanged(PageChangedEvent evt);
 }

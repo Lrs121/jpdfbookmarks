@@ -2,9 +2,13 @@ package it.flavianopetrocchi.jpdfbookmarks;
 
 import it.flavianopetrocchi.utilities.Ut;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Ask for a PDF file password.
+ * 
+ * @author fla
+ */
 public class PasswordDialog extends javax.swing.JDialog {
 
     private byte[] password = null;

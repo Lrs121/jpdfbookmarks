@@ -26,6 +26,11 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The license acceptance dialog.
+ * 
+ * @author fla
+ */
 public class LicenseBox extends javax.swing.JDialog {
 
     private static final String LICENSE_FILE = "gpl-3.0-standalone.html";
@@ -33,7 +38,9 @@ public class LicenseBox extends javax.swing.JDialog {
     private boolean accept = false;
     private MyHyperlinkListener linksListener;
 
-    /** Creates new form LicenseBox */
+    /** 
+     * Creates new form LicenseBox 
+     */
     public LicenseBox(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();

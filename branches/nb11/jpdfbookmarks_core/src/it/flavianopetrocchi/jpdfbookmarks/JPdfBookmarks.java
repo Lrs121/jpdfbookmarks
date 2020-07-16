@@ -74,8 +74,9 @@ class JPdfBookmarks {
     public static final boolean DEBUG = false;
 
     //private IBookmarksConverter pdf;
+    
+    // Enumeration of commands
     private enum Mode {
-
         DUMP,
         APPLY,
         HELP,

@@ -22,6 +22,17 @@
 
 package it.flavianopetrocchi.jpdfbookmarks;
 
+/**
+ * An interface to a PDF reader class. This class is apparently never used.
+ * 
+ * @author fla
+ */
 public interface IPageProducer {
+    /**
+     * Return a page from a PDF file
+     * 
+     * @param pageNumber
+     * @return a rendered page.
+     */
     public IPage getPage(int pageNumber);
 }

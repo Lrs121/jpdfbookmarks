@@ -28,6 +28,12 @@ import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 
+/**
+ * This class is never instantiated.
+ * 
+ * @author fla
+ */
+
 public class DummyPageProducer implements IPageProducer {
 
     private IBookmarksConverter converter;

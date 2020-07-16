@@ -42,6 +42,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 
+/**
+ * Provides the display of bookmarks.
+ * 
+ * @author fla
+ */
 public class BookmarksTree extends MouseDraggableTree implements CellEditorListener {
 
     private Bookmark lastFollowedBookmark;

@@ -19,28 +19,35 @@
  * You should have received a copy of the GNU General Public License
  * along with JPdfBookmarks.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.flavianopetrocchi.jpdfbookmarks;
 
 import java.awt.Frame;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 
+/**
+ * Get authentication credentials (a user name and password) from the user.
+ * Extends the abstract class Authenticator. Only password authentication is
+ * supported.
+ *
+ * @author fla
+ */
 public class ProxyAuthenticator extends Authenticator {
-	Frame parent;
-	boolean modal;
 
-	public ProxyAuthenticator(Frame dialogParent, boolean dialogModal) {
-		parent = dialogParent;
-		modal = dialogModal;
-	}
+    Frame parent;
+    boolean modal;
 
-	@Override
-	protected PasswordAuthentication getPasswordAuthentication() {
-		final AuthenticatorDialog dialog = new AuthenticatorDialog(this.parent,
-				this.modal);
-		dialog.setTitle(getRequestingPrompt());
-		dialog.setVisible(true);
-		return new PasswordAuthentication(dialog.getUsername(), dialog.getPassword());
-	}
+    public ProxyAuthenticator(Frame dialogParent, boolean dialogModal) {
+        parent = dialogParent;
+        modal = dialogModal;
+    }
+
+    @Override
+    protected PasswordAuthentication getPasswordAuthentication() {
+        final AuthenticatorDialog dialog = new AuthenticatorDialog(this.parent,
+                this.modal);
+        dialog.setTitle(getRequestingPrompt());
+        dialog.setVisible(true);
+        return new PasswordAuthentication(dialog.getUsername(), dialog.getPassword());
+    }
 }

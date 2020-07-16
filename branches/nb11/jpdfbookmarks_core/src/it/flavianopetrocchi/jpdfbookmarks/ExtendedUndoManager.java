@@ -23,24 +23,37 @@ package it.flavianopetrocchi.jpdfbookmarks;
 
 import javax.swing.event.*;
 import javax.swing.undo.*;
-import java.util.Vector;
+import java.util.Vector;        // Considered obsolete. TBD: replace.
 
+/**
+ * Extends the undo manager class to do…something, I'm not sure what, yet. – RMFritz
+ * 
+ * @author fla
+ */
 public class ExtendedUndoManager extends UndoManager
         implements UndoableEditListener {
 
-    private ExtendedUndoableEditSupport support =
-            new ExtendedUndoableEditSupport();
+    private ExtendedUndoableEditSupport support
+            = new ExtendedUndoableEditSupport();
     private Object source; // The source of the last edit
 
-    // Return the complete list of edits in an array.
+    /**
+     * Return the complete list of edits in an array.
+     *
+     * @return
+     */
     public synchronized UndoableEdit[] getEdits() {
         UndoableEdit[] array = new UndoableEdit[edits.size()];
         edits.copyInto(array);
         return array;
     }
 
-    // Return all currently significant undoable edits. The first edit is the
-    // next one to be undone.
+    /**
+     * Return all currently significant undoable edits.The first edit is the
+     * next one to be undone.
+     *
+     * @return
+     */
     public synchronized UndoableEdit[] getUndoableEdits() {
         int size = edits.size();
         Vector v = new Vector(size);
@@ -55,8 +68,12 @@ public class ExtendedUndoManager extends UndoManager
         return array;
     }
 
-    // Return all currently significant redoable edits. The first edit is the
-    // next one to be redone.
+    /**
+     * Return all currently significant redoable edits.The first edit is the
+     * next one to be redone.
+     *
+     * @return
+     */
     public synchronized UndoableEdit[] getRedoableEdits() {
         int size = edits.size();
         Vector v = new Vector(size);
@@ -73,7 +90,9 @@ public class ExtendedUndoManager extends UndoManager
     // UndoableEditListener Method Support (ExtendedUndoManager.java, part 2)
     //
 
-    // Add an edit and notify our listeners.
+    /**
+     * Add an edit and notify our listeners.
+     */
     @Override
     public synchronized boolean addEdit(UndoableEdit anEdit) {
         boolean b = super.addEdit(anEdit);
@@ -83,7 +102,12 @@ public class ExtendedUndoManager extends UndoManager
         return b;
     }
 
-    // When an edit is sent to us, call addEdit() to notify any of our listeners.
+    /**
+     * When an edit is sent to us, call addEdit() to notify any of our
+     * listeners.
+     *
+     * @param ev
+     */
     @Override
     public synchronized void undoableEditHappened(UndoableEditEvent ev) {
         UndoableEdit ue = ev.getEdit();
@@ -91,22 +115,36 @@ public class ExtendedUndoManager extends UndoManager
         addEdit(ue);
     }
 
-    // Add a listener to be notified each time an edit is added to this manager.
-    // This makes it easy to update undo/redo menus as edits are added.
+    /**
+     * Add a listener to be notified each time an edit is added to this
+     * manager.This makes it easy to update undo/redo menus as edits are added.
+     *
+     * @param l
+     */
     public synchronized void addUndoableEditListener(UndoableEditListener l) {
         support.addUndoableEditListener(l);
     }
 
-    // Remove a listener from this manager.
+    /**
+     * Remove a listener from this manager.
+     *
+     * @param l
+     */
     public synchronized void removeUndoableEditListener(UndoableEditListener l) {
         support.removeUndoableEditListener(l);
     }
 
-    // A simple extension of UndoableEditSupport that lets us specify the event
-    // source each time we post an edit
+    /**
+     * A simple extension of UndoableEditSupport that lets us specify the event
+     * source each time we post an edit.
+     * 
+     * @author fla
+     */
     class ExtendedUndoableEditSupport extends UndoableEditSupport {
 
-        // Post an edit to added listeners.
+        /** 
+         * Post an edit to added listeners.
+         */
         @Override
         public synchronized void postEdit(UndoableEdit ue) {
             realSource = source; // From our enclosing manager object

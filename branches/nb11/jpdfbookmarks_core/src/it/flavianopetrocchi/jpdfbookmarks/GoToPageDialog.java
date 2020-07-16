@@ -39,13 +39,27 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+/**
+ * Dialog which gets a page number and displays the page. Pages are numbered
+ * beginning with 1; the number the user enters is therefore one greater than
+ * the what the PDF standard calls the page index – the position of the page in
+ * the PDF page tree. In the future, this dialog may also accept PDF page
+ * labels, which typically track the page numbers printed on a page (ix, 33,
+ * A-5, etc.)
+ *
+ * PDF 1.7 standard (2008). §7.7.3 Page Tree, §12.4.2, Page Labels.
+ *
+ * @author fla
+ */
 class GoToPageDialog extends JDialog {
 
     private IntegerTextField txtGoToPage;
     private JLabel lblPageOfPages;
     private boolean operationNotAborted = false;
 
-    /** Creates the reusable dialog. */
+    /**
+     * Creates the reusable dialog.
+     */
     public GoToPageDialog(Frame aFrame, int currentPage, int numberOfPages) {
         super(aFrame, true);
 

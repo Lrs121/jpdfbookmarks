@@ -152,6 +152,11 @@ import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoableEdit;
 import javax.swing.undo.UndoableEditSupport;// </editor-fold>
 
+/**
+ * The main frame of the JPdf GUI.
+ * 
+ * @author fla
+ */
 class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         PageChangedListener, ViewChangedListener, TreeExpansionListener,
         UndoableEditListener, TreeSelectionListener, CellEditorListener,
@@ -1673,7 +1678,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
                 -minPageNumber + 1);
         pageOffsetDialog.setVisible(true);
         if (pageOffsetDialog.operationNotAborted()) {
-            UnboablePageOffset undoablePageOffset = new UnboablePageOffset(
+            UndoablePageOffset undoablePageOffset = new UndoablePageOffset(
                     bookmarksTreeModel, paths, pageOffsetDialog.getOffsetValue());
 
             undoablePageOffset.doEdit();
@@ -2407,7 +2412,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
             presentation = Res.getString("ACTION_DELETE");
         } else if (undoable instanceof UndoableSetDestination) {
             presentation = Res.getString("ACTION_DEST_FROM_VIEW");
-        } else if (undoable instanceof UnboablePageOffset) {
+        } else if (undoable instanceof UndoablePageOffset) {
             presentation = Res.getString("UNDOABLE_OFFSET");
         } else if (undoable instanceof UndoableLoadBookmarks) {
             presentation = Res.getString("UNDOABLE_LOAD_BOOKMARKS");

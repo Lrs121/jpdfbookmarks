@@ -19,7 +19,6 @@
  * You should have received a copy of the GNU General Public License
  * along with JPdfBookmarks.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.flavianopetrocchi.jpdfbookmarks;
 
 import it.flavianopetrocchi.jpdfbookmarks.bookmark.Bookmark;
@@ -27,32 +26,39 @@ import it.flavianopetrocchi.jpdfbookmarks.bookmark.IBookmarksConverter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+/**
+ * Apply (load) the contents of a bookmarks file to a PDF file.
+ * 
+ * @author gla
+ */
+
 public class Applier extends OutlinePresentation {
-	Bookmark root;
 
-	public Applier(IBookmarksConverter pdf) {
-		super(pdf);
-	}
+    Bookmark root;
 
-	public Applier(IBookmarksConverter pdf, String indent, String pageSep,
-			String attributesSep) {
-		super(pdf, indent, pageSep, attributesSep);
-	}
+    public Applier(IBookmarksConverter pdf) {
+        super(pdf);
+    }
 
-	void loadBookmarksFile(String bookmarksFilePath, String charset)
-			throws FileNotFoundException, IOException {
-		root = Bookmark.outlineFromFile(pdf, bookmarksFilePath,
-				getIndentationString(), getPageSep(), getAttributesSep(), charset);
-	}
+    public Applier(IBookmarksConverter pdf, String indent, String pageSep,
+            String attributesSep) {
+        super(pdf, indent, pageSep, attributesSep);
+    }
 
-	void save(String outputFilePath) throws IOException {
+    void loadBookmarksFile(String bookmarksFilePath, String charset)
+            throws FileNotFoundException, IOException {
+        root = Bookmark.outlineFromFile(pdf, bookmarksFilePath,
+                getIndentationString(), getPageSep(), getAttributesSep(), charset);
+    }
+
+    void save(String outputFilePath) throws IOException {
 //		pdf.rebuildBookmarksFromTreeNodes(root);
 //		pdf.save(outputFilePath);
-            save(outputFilePath, null, null);
-	}
+        save(outputFilePath, null, null);
+    }
 
-        void save(String outputFilePath, byte[] userPassword, byte[] ownerPassword) throws IOException {
-		pdf.rebuildBookmarksFromTreeNodes(root);
-		pdf.save(outputFilePath, userPassword, ownerPassword);
-	}
+    void save(String outputFilePath, byte[] userPassword, byte[] ownerPassword) throws IOException {
+        pdf.rebuildBookmarksFromTreeNodes(root);
+        pdf.save(outputFilePath, userPassword, ownerPassword);
+    }
 }

@@ -21,6 +21,11 @@
  */
 package it.flavianopetrocchi.jpdfbookmarks;
 
+/**
+ * A so-far unused class which gives the dimensions of a page in inches.
+ * 
+ * @author fla
+ */
 public class PageDimension {
 
     private float width = 0f;
