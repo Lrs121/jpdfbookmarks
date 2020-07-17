@@ -25,6 +25,11 @@ package it.flavianopetrocchi.jpdfbookmarks;
 
 import java.util.EventObject;
 
+/**
+ * Fired when the app begins rendering a PDF page.
+ * 
+ * @author fla
+ */
 public class RenderingStartEvent extends EventObject {
 	private int pageNumber;
 

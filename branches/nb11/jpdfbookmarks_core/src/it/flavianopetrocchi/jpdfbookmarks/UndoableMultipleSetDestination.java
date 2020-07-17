@@ -5,6 +5,12 @@ import it.flavianopetrocchi.jpdfbookmarks.bookmark.Bookmark;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
 
+/**
+ * Set multiple go-to actions on a bookmark, see PDF-1.7 (2008), §12.6.4.2. Not currently used.
+ * 
+ * @author fla
+ */
+
 public class UndoableMultipleSetDestination extends UndoableBookmarksAction {
 
     public static final int REPLACE = 0;

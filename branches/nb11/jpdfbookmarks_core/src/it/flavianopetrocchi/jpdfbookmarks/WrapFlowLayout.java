@@ -19,8 +19,6 @@
  * You should have received a copy of the GNU General Public License
  * along with JPdfBookmarks.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 package it.flavianopetrocchi.jpdfbookmarks;
 
 import java.awt.Component;
@@ -30,8 +28,10 @@ import java.awt.FlowLayout;
 import java.awt.Insets;
 
 /**
- * This Layout is to permit the toolbars panel to increase height and position
- * toolbars in more rows when the frame width diminished.
+ * Permits the toolbars panel to increase height and position of toolbars in
+ * more rows when the frame width diminished.
+ *
+ * @author fla
  */
 public class WrapFlowLayout extends FlowLayout {
 

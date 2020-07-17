@@ -16,7 +16,7 @@ public class GlassPane extends JComponent implements AWTEventListener {
 
     /**
      * GlassPane constructor comment.
-     * @param Container a
+     * @param activeComponent
      */
     protected GlassPane(Component activeComponent) {
         // add adapters that do nothing for keyboard and mouse actions

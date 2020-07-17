@@ -25,6 +25,11 @@ import it.flavianopetrocchi.jpdfbookmarks.bookmark.Bookmark;
 import it.flavianopetrocchi.jpdfbookmarks.bookmark.BookmarkType;
 import javax.swing.JTree;
 
+/**
+ * Set a URI action (go to a link) on bookmark, see PDF-1.7 (2008), §12.6.4.7.
+ *
+ * @author fla
+ */
 public class UndoableMultiSetWebLink extends UndoableMultiSetDest {
 
     private String address;

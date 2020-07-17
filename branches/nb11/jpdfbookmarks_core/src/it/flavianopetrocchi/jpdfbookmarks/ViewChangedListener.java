@@ -26,7 +26,11 @@ package it.flavianopetrocchi.jpdfbookmarks;
 
 import java.util.EventListener;
 
-
+/**
+ * Interface to a listener fired when the PDF page in the viewer changes.
+ * 
+ * @author fla
+ */
 public interface ViewChangedListener extends EventListener {
 	public void viewChanged(ViewChangedEvent evt);
 }

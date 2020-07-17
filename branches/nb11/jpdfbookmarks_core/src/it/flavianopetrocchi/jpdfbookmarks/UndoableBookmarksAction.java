@@ -30,6 +30,11 @@ import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
+/**
+ * Undo and redo bookmark changes.
+ * 
+ * @author fla
+ */
 public abstract class UndoableBookmarksAction extends AbstractUndoableEdit {
 
     protected DefaultTreeModel treeModel;
@@ -62,8 +67,8 @@ public abstract class UndoableBookmarksAction extends AbstractUndoableEdit {
     }
 
     private ArrayList<Bookmark> backupBookmarks(ArrayList<Bookmark> bookmarks) {
-
-        ArrayList<Bookmark> backup = new ArrayList<Bookmark>(bookmarks.size());
+        ArrayList<Bookmark> backup = new ArrayList<>(bookmarks.size());
+        
         for (Bookmark b : bookmarks) {
             Bookmark copy = Bookmark.cloneBookmark(b, false);
             backup.add(copy);
@@ -86,8 +91,7 @@ public abstract class UndoableBookmarksAction extends AbstractUndoableEdit {
     }
 
     protected final ArrayList<Bookmark> getSelectedBookmarks() {
-
-        ArrayList<Bookmark> bookmarksList = new ArrayList<Bookmark>();
+        ArrayList<Bookmark> bookmarksList = new ArrayList<>();
         TreePath[] paths = tree.getSelectionPaths();
         if (paths != null) {
             for (TreePath path : paths) {

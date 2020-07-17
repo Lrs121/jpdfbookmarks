@@ -26,28 +26,33 @@ package it.flavianopetrocchi.jpdfbookmarks;
 import it.flavianopetrocchi.jpdfbookmarks.bookmark.Bookmark;
 import java.util.EventObject;
 
+/**
+ * Fired when the PDF page in the viewer changes.
+ * 
+ * @author fla
+ */
 public class ViewChangedEvent extends EventObject {
-	private FitType fitType;
-	private float scale;
-	private Bookmark bookmark;
+    private FitType fitType;
+    private float scale;
+    private Bookmark bookmark;
 
-	public ViewChangedEvent(Object source, FitType fitType, float scale, Bookmark bookmark) {
-		super(source);
-		this.fitType = fitType;
-		this.scale = scale;
-		this.bookmark = bookmark;
-	}
+    public ViewChangedEvent(Object source, FitType fitType, float scale, Bookmark bookmark) {
+        super(source);
+        this.fitType = fitType;
+        this.scale = scale;
+        this.bookmark = bookmark;
+    }
 
-	public FitType getFitType() {
-		return fitType;
-	}
+    public FitType getFitType() {
+        return fitType;
+    }
 
-	public float getScale() {
-		return scale;
-	}
+    public float getScale() {
+        return scale;
+    }
 
-	public Bookmark getBookmark() {
-		return bookmark;
-	}
+    public Bookmark getBookmark() {
+        return bookmark;
+    }
 
 }

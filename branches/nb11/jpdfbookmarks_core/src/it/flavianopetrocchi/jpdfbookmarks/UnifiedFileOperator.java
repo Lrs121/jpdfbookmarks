@@ -38,6 +38,11 @@ import javax.management.ServiceNotFoundException;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+/**
+ * A collection of file operations: open, close, save, etc.
+ * 
+ * @author fla
+ */
 public final class UnifiedFileOperator {
 
     //private IPdfView viewPanel = new PdfViewAdapter();
@@ -65,8 +70,7 @@ public final class UnifiedFileOperator {
         return filePath;
     }
     private boolean fileChanged = false;
-    private ArrayList<FileOperationListener> fileOperationListeners =
-            new ArrayList<FileOperationListener>();
+    private ArrayList<FileOperationListener> fileOperationListeners = new ArrayList<>();
 
     private boolean askOwnerPassword(String msg) {
         PasswordDialog d = new PasswordDialog(null, true, msg);
@@ -158,7 +162,7 @@ public final class UnifiedFileOperator {
                 if (bookmarksConverter.isBookmarksEditingPermitted()) {
                     ownerPasswordNeeded = false;
                 }
-            } catch (Exception e) {
+            } catch (IOException e) {
                 ownerPassword = null;
             }
         }
@@ -364,6 +368,7 @@ public final class UnifiedFileOperator {
             this.e = e;
         }
 
+        @Override
         public void run() {
             fireFileOperationEvent(e);
         }

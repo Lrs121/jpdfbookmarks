@@ -25,6 +25,11 @@ package it.flavianopetrocchi.jpdfbookmarks;
 import it.flavianopetrocchi.jpdfbookmarks.bookmark.Bookmark;
 import javax.swing.JTree;
 
+/**
+ * Add or replace multiple bookmarks.
+ * 
+ * @author fla
+ */
 public class UndoableMultiSetDestFromView extends UndoableMultiSetDest {
 
     private boolean excludePageNumber;

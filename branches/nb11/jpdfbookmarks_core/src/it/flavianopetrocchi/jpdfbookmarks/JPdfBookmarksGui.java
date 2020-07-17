@@ -50,6 +50,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.awt.HeadlessException;
 import java.awt.Window;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -96,6 +97,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -153,7 +155,7 @@ import javax.swing.undo.UndoableEdit;
 import javax.swing.undo.UndoableEditSupport;// </editor-fold>
 
 /**
- * The main frame of the JPdf GUI.
+ * The main frame of the JPdfBookmarks GUI.
  * 
  * @author fla
  */
@@ -878,7 +880,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
                         }
                     });
                     updateThumbnailsPanel(fileOperator.getViewPanel().getThumbnails());
-                } catch (Exception ex) {
+                } catch (InterruptedException | ExecutionException ex) {
                     showErrorMessage(Res.getString("ERROR_OPENING_FILE") + " "
                             + file.getName());
                 } finally {
@@ -1111,7 +1113,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         Desktop desktop = Desktop.getDesktop();
         try {
             desktop.open(new File(file).getCanonicalFile().getAbsoluteFile());
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             showErrorMessage(Res.getString("ERR_LAUNCHING_FILE") + " " + file + ".");
         }
     }
@@ -1152,7 +1154,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         Bookmark b = viewPanel.getBookmarkFromView();
         if (b != null) {
             //Bookmark bookmarkCopied = Bookmark.cloneBookmark(b, !b.isOpened());
-            ArrayList<Bookmark> bookmarks = new ArrayList<Bookmark>();
+            ArrayList<Bookmark> bookmarks = new ArrayList<>();
             bookmarks.add(b);
             BookmarkSelection bs = new BookmarkSelection(bookmarks, bookmarksFlavor, false, fileOperator.getFile());
             localClipboard.setContents(bs, bs);
@@ -1204,15 +1206,14 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
                 fileOperator.setFileChanged(true);
                 bookmarksTreeModel.nodeStructureChanged(father);
                 recreateNodesOpenedState();
-            } catch (UnsupportedFlavorException ex) {
-            } catch (IOException ex) {
+            } catch (UnsupportedFlavorException | IOException ex) {
             }
         }
     }
 
     private ArrayList<Bookmark> getSelectedBookmarks() {
 
-        ArrayList<Bookmark> bookmarksList = new ArrayList<Bookmark>();
+        ArrayList<Bookmark> bookmarksList = new ArrayList<>();
         TreePath[] paths = bookmarksTree.getSelectionPaths();
         for (TreePath path : paths) {
             bookmarksList.add((Bookmark) path.getLastPathComponent());
@@ -1528,7 +1529,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
                     JOptionPane.showMessageDialog(JPdfBookmarksGui.this, newVersionAvailable(newVersion),
                             JPdfBookmarks.APP_NAME, JOptionPane.INFORMATION_MESSAGE);
                 }
-            } catch (Exception ex) {
+            } catch (HeadlessException | InterruptedException | ExecutionException ex) {
                 if (!quietMode) {
                     showErrorMessage(Res.getString("ERROR_CHECKING_UPDATES"));
                 }
@@ -1648,10 +1649,10 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
             Desktop desktop = Desktop.getDesktop();
             try {
                 desktop.open(f);
-            } catch (Exception ex) {
+            } catch (IOException ex) {
                 showErrorMessage(Res.getString("ERR_LAUNCHING_FILE") + " " + f + ".");
             }
-        } catch (Exception exc) {
+        } catch (IOException exc) {
             JOptionPane.showMessageDialog(this,
                     Res.getString("ERROR_SAVING_FILE"),
                     title, JOptionPane.WARNING_MESSAGE);
@@ -2601,16 +2602,12 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         } else {
             viewLeftPanel.setState(false);
         }
-        viewLeftPanel.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int currentState = leftPanel.getPanelState();
-                if (currentState == CollapsingPanel.PANEL_COLLAPSED) {
-                    leftPanel.setPanelState(CollapsingPanel.PANEL_OPENED);
-                } else {
-                    leftPanel.setPanelState(CollapsingPanel.PANEL_COLLAPSED);
-                }
+        viewLeftPanel.addActionListener((ActionEvent e) -> {
+            int currentState = leftPanel.getPanelState();
+            if (currentState == CollapsingPanel.PANEL_COLLAPSED) {
+                leftPanel.setPanelState(CollapsingPanel.PANEL_OPENED);
+            } else {
+                leftPanel.setPanelState(CollapsingPanel.PANEL_COLLAPSED);
             }
         });
         menuView.add(viewLeftPanel);
@@ -2624,22 +2621,14 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         } else {
             bookmarksButton.setSelected(true);
         }
-        bookmarksButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (leftPanel != null) {
-                    leftPanel.selectPanelToShow(Res.getString("BOOKMARKS_TAB_TITLE"));
-                }
+        bookmarksButton.addActionListener((ActionEvent e) -> {
+            if (leftPanel != null) {
+                leftPanel.selectPanelToShow(Res.getString("BOOKMARKS_TAB_TITLE"));
             }
         });
-        thumbnailsButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (leftPanel != null) {
-                    leftPanel.selectPanelToShow(Res.getString("THUMBNAILS_TAB_TITLE"));
-                }
+        thumbnailsButton.addActionListener((ActionEvent e) -> {
+            if (leftPanel != null) {
+                leftPanel.selectPanelToShow(Res.getString("THUMBNAILS_TAB_TITLE"));
             }
         });
         leftPanelMenuGroup.add(bookmarksButton);
@@ -2697,16 +2686,12 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         checkItem.setToolTipText(Res.getString("MENU_CONVERT_NAMED_DEST_DESCR"));
         checkItem.setMnemonic(Res.mnemonicFromRes("MENU_CONVERT_NAMED_DEST_MNEMONIC"));
         checkItem.setSelected(userPrefs.getConvertNamedDestinations());
-        checkItem.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JCheckBoxMenuItem item = (JCheckBoxMenuItem) e.getSource();
-                userPrefs.setConvertNamedDestinations(item.isSelected());
-                JOptionPane.showMessageDialog(JPdfBookmarksGui.this,
-                        Res.getString("CONVERT_NAMED_DEST_MSG"), title,
-                        JOptionPane.WARNING_MESSAGE);
-            }
+        checkItem.addActionListener((ActionEvent e) -> {
+            JCheckBoxMenuItem item1 = (JCheckBoxMenuItem) e.getSource();
+            userPrefs.setConvertNamedDestinations(item1.isSelected());
+            JOptionPane.showMessageDialog(JPdfBookmarksGui.this,
+                    Res.getString("CONVERT_NAMED_DEST_MSG"), title,
+                    JOptionPane.WARNING_MESSAGE);
         });
         //menuTools.add(checkItem);
 
@@ -2760,16 +2745,12 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
 
         toolbarsPanelsMenu = new JPopupMenu();
         JMenuItem toolbarsManagerItem = new JMenuItem(Res.getString("TAB_TOOLBARS_MANAGER") + "...");
-        toolbarsManagerItem.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                OptionsDlg optionsDlg = new OptionsDlg(JPdfBookmarksGui.this,
-                        true);
-                optionsDlg.setLocationRelativeTo(JPdfBookmarksGui.this);
-                optionsDlg.setVisibleTab(OptionsDlg.TOOLBARS_PANEL);
-                optionsDlg.setVisible(true);
-            }
+        toolbarsManagerItem.addActionListener((ActionEvent e) -> {
+            OptionsDlg optionsDlg = new OptionsDlg(JPdfBookmarksGui.this,
+                    true);
+            optionsDlg.setLocationRelativeTo(JPdfBookmarksGui.this);
+            optionsDlg.setVisibleTab(OptionsDlg.TOOLBARS_PANEL);
+            optionsDlg.setVisible(true);
         });
         toolbarsPanelsMenu.add(toolbarsManagerItem);
 
@@ -2913,12 +2894,8 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         txtGoToPage.setText("0");
         txtGoToPage.setEnabled(false);
         txtGoToPage.setHorizontalAlignment(JTextField.CENTER);
-        txtGoToPage.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                viewPanel.goToPage(txtGoToPage.getInteger());
-            }
+        txtGoToPage.addActionListener((ActionEvent e) -> {
+            viewPanel.goToPage(txtGoToPage.getInteger());
         });
         navigationToolbar.add(txtGoToPage);
         lblPageOfPages = new JLabel(String.format(" / %5d", 0));
@@ -2969,13 +2946,9 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         txtZoom.setText("0");
         txtZoom.setEnabled(false);
         txtZoom.setHorizontalAlignment(JTextField.CENTER);
-        txtZoom.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                float scale = txtZoom.getInteger() / 100f;
-                viewPanel.setTopLeftZoom(-1, -1, scale);
-            }
+        txtZoom.addActionListener((ActionEvent e) -> {
+            float scale = txtZoom.getInteger() / 100f;
+            viewPanel.setTopLeftZoom(-1, -1, scale);
         });
         zoomToolbar.add(txtZoom);
         lblPercent = new JLabel(" % ");
@@ -3212,16 +3185,12 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         leftPanel = new LeftPanel(centralSplit);
         leftPanel.addBookmarksPanel(createBookmarksPanel());
         leftPanel.addThumbnailsPanel(createThumbnailsPanel());
-        leftPanel.getComboBoxSelector().addItemListener(new ItemListener() {
-
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                String item = (String) e.getItem();
-                if (item.equals(Res.getString("BOOKMARKS_TAB_TITLE"))) {
-                    bookmarksButton.setSelected(true);
-                } else {
-                    thumbnailsButton.setSelected(true);
-                }
+        leftPanel.getComboBoxSelector().addItemListener((ItemEvent e) -> {
+            String item = (String) e.getItem();
+            if (item.equals(Res.getString("BOOKMARKS_TAB_TITLE"))) {
+                bookmarksButton.setSelected(true);
+            } else {
+                thumbnailsButton.setSelected(true);
             }
         });
         leftPanel.getComboBoxSelector().setSelectedItem(userPrefs.getPanelToShow());
@@ -3622,8 +3591,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
                     java.net.URI uri = new java.net.URI(s);
                     java.io.File file = new java.io.File(uri);
                     list.add(file);
-                } catch (java.net.URISyntaxException e) {
-                } catch (IllegalArgumentException e) {
+                } catch (java.net.URISyntaxException | IllegalArgumentException e) {
                 }
             }
             return list;
@@ -3669,8 +3637,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
                         }
                     }
                 }
-            } catch (UnsupportedFlavorException e) {
-            } catch (IOException e) {
+            } catch (UnsupportedFlavorException | IOException e) {
             } finally {
                 evt.dropComplete(true);
             }

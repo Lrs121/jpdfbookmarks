@@ -25,7 +25,11 @@ package it.flavianopetrocchi.jpdfbookmarks;
 
 import java.util.EventListener;
 
-
+/**
+ * Listen for a rendering start
+ * 
+ * @author fla
+ */
 public interface RenderingStartListener extends EventListener {
 	public void renderingStart(RenderingStartEvent evt);
 }

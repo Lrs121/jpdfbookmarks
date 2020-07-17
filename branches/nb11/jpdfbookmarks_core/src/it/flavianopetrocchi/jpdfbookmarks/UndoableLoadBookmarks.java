@@ -27,8 +27,12 @@ import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
+/**
+ * Load bookmarks
+ * 
+ * @author fla
+ */
 public class UndoableLoadBookmarks extends AbstractUndoableEdit {
-
     private DefaultTreeModel treeModel;
     private BookmarksTree tree;
     private Bookmark oldRoot, newRoot;

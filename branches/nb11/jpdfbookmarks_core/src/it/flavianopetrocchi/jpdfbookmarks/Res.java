@@ -19,7 +19,6 @@
  * You should have received a copy of the GNU General Public License
  * along with JPdfBookmarks.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.flavianopetrocchi.jpdfbookmarks;
 
 import java.io.File;
@@ -27,36 +26,41 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javax.swing.ImageIcon;
 
+/**
+ * A helper class for dealing with resources.
+ *
+ * @author fla
+ */
 public final class Res {
+    private static final String LOCALES_PATH
+            = "it/flavianopetrocchi/jpdfbookmarks/locales/";
 
-	private static final String LOCALES_PATH =
-			"it/flavianopetrocchi/jpdfbookmarks/locales/";
+    /**
+     * textResource provides localized strings.
+     */
+    private static final ResourceBundle textResource = ResourceBundle.getBundle(
+            LOCALES_PATH + "localizedText");
 
-	/**
-	 * ResourceBundle to obtain localized strings related to command line
-	 * interface.
-	 */
-	private static final ResourceBundle textResource = ResourceBundle.getBundle(
-			LOCALES_PATH + "localizedText");
+    public static String getString(String key) {
+        return textResource.getString(key);
+    }
 
-	public static String getString(String key) {
-		return textResource.getString(key);
-	}
+    /**
+     * Return the first char of the string in the resource.
+     *
+     * @param key The key to retrieve the resource.
+     * @return The first char of the string in the resource.
+     */
+    public static char mnemonicFromRes(String key) {
+        return Res.getString(key).trim().charAt(0);
+    }
 
-	/**
-	 * Return the first char of the string in the resource.
-	 * @param key The key to retrieve the resource.
-	 * @return The first char of the string in the resource.
-	 */
-	public static char mnemonicFromRes(String key) {
-		return Res.getString(key).trim().charAt(0);
-	}
-
-	/**
-	* utility method to get an icon from the resources of this class
-	* @param name the name of the icon
-	* @return the icon, or null if the icon wasn't found.
-	*/
+    /**
+     * utility method to get an icon from the resources of this class
+     *
+     * @param name the name of the icon
+     * @return the icon, or null if the icon wasn't found.
+     */
     public static ImageIcon getIcon(Class cl, String name) {
         ImageIcon icon = null;
         URL url = null;
@@ -68,12 +72,12 @@ public final class Res {
                 System.out.println(Res.getString("RESOURCE_NOT_FOUND") + url);
             }
         } catch (Exception e) {
-            System.out.println(Res.getString("RESOURCE_NOT_FOUND") +
-					cl.getName() + File.pathSeparator + name);
+            System.out.println(Res.getString("RESOURCE_NOT_FOUND")
+                    + cl.getName() + File.pathSeparator + name);
         }
         return icon;
     }
 
-	private Res() {
-	}
+    private Res() {
+    }
 }

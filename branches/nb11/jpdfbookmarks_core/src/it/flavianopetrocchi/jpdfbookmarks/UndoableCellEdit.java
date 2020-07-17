@@ -27,8 +27,12 @@ import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
+/**
+ * Undo/redo support for cell edits (not sure what a cell edit is, though).
+ * 
+ * @author fla
+ */
 public class UndoableCellEdit extends AbstractUndoableEdit {
-
     private String newText;
     private String oldText;
     private DefaultTreeModel treeModel;

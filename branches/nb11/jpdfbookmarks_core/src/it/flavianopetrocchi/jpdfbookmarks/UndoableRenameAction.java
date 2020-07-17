@@ -24,6 +24,11 @@ package it.flavianopetrocchi.jpdfbookmarks;
 import it.flavianopetrocchi.jpdfbookmarks.bookmark.Bookmark;
 import javax.swing.JTree;
 
+/**
+ * Rename bookmarks
+ * 
+ * @author fla
+ */
 public class UndoableRenameAction extends UndoableBookmarksAction {
 
     String title;

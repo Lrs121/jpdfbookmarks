@@ -27,6 +27,11 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+/**
+ * Formatting data for exporting and importing bookmarks (outline entries).
+ * 
+ * @author fla
+ */
 public class SeparatorsPanel extends javax.swing.JPanel {
 
     Prefs userPrefs;

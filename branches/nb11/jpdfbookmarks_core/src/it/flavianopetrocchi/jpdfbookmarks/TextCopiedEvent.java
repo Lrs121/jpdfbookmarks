@@ -24,6 +24,11 @@ package it.flavianopetrocchi.jpdfbookmarks;
 
 import java.util.EventObject;
 
+/**
+ * Fired when text is copied out of a PDF file.
+ * 
+ * @author fla
+ */
 public class TextCopiedEvent extends EventObject{
     String copiedText;
 

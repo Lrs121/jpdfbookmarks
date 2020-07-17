@@ -1,4 +1,3 @@
-
 package it.flavianopetrocchi.jpdfbookmarks;
 
 import java.awt.Font;
@@ -8,7 +7,11 @@ import org.jpedal.examples.simpleviewer.Values;
 import org.jpedal.examples.simpleviewer.gui.swing.SwingThumbnailPanel;
 import org.jpedal.objects.PdfPageData;
 
-
+/**
+ * Updates the thumbnails in the thumbnails panel when the page is changed.
+ *
+ * @author fla
+ */
 public class ThumbnailsPanel extends SwingThumbnailPanel implements PageChangedListener {
 
     public ThumbnailsPanel(Values commonValues, PdfDecoder decoder) {
@@ -30,6 +33,5 @@ public class ThumbnailsPanel extends SwingThumbnailPanel implements PageChangedL
 //            btn.setContentAreaFilled(false);
 //        }
     }
-
 
 }

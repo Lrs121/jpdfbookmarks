@@ -25,13 +25,16 @@ package it.flavianopetrocchi.jpdfbookmarks;
 import it.flavianopetrocchi.jpdfbookmarks.bookmark.Bookmark;
 import java.util.ArrayList;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
+/**
+ * Paste bookmarks.
+ * 
+ * @author fla
+ */
 public class UndoablePasteBookmarks extends AbstractUndoableEdit {
-
     private DefaultTreeModel treeModel;
     private ArrayList<Bookmark> bookmarksCopied;
     private UndoableDeleteBookmark undoableDelete;

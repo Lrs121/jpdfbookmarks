@@ -25,6 +25,11 @@ import it.flavianopetrocchi.jpdfbookmarks.bookmark.Bookmark;
 import it.flavianopetrocchi.jpdfbookmarks.bookmark.BookmarkType;
 import javax.swing.JTree;
 
+/**
+ * Set an outline launch action, see PDF 1.7 (2008), §12.6.4.5.
+ * 
+ * @author fla
+ */
 public class UndoableMultiSetLaunchLink extends UndoableMultiSetDest {
 
     private String path;

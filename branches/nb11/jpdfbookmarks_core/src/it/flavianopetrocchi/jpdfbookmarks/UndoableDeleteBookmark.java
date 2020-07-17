@@ -31,6 +31,11 @@ import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
+/**
+ * Delete a bookmark using undo.
+ * 
+ * @author fla
+ */
 public class UndoableDeleteBookmark extends AbstractUndoableEdit {
 
     private DefaultTreeModel treeModel;
@@ -46,7 +51,7 @@ public class UndoableDeleteBookmark extends AbstractUndoableEdit {
             if (parentsMap.containsKey(parent)) {
                 list = parentsMap.get(parent);
             } else {
-                list = new ArrayList<Bookmark>();
+                list = new ArrayList<>();
                 parentsMap.put(parent, list);
             }
             if (i >= list.size()) {

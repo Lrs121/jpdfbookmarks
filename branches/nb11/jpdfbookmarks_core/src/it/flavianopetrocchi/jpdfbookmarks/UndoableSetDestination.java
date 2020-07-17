@@ -27,14 +27,19 @@ import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
+/**
+ * Set a bookmark destination.
+ *
+ * @author fla
+ */
 public class UndoableSetDestination extends AbstractUndoableEdit {
 
     private DefaultTreeModel treeModel;
     private Bookmark old, dest;
     private Bookmark backup = new Bookmark();
 
-    public UndoableSetDestination(DefaultTreeModel model, Bookmark old,
-            Bookmark dest) {
+    public UndoableSetDestination(
+            DefaultTreeModel model, Bookmark old, Bookmark dest) {
         this.treeModel = model;
         this.backup.cloneDestination(old);
         this.old = old;

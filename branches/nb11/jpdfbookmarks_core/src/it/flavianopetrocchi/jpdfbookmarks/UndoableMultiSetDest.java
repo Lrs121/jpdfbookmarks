@@ -24,6 +24,11 @@ package it.flavianopetrocchi.jpdfbookmarks;
 
 import javax.swing.JTree;
 
+/**
+ * Set multiple go-to actions on a bookmark, see PDF-1.7 (2008), §12.6.4.2.
+ * 
+ * @author fla
+ */
 public abstract class UndoableMultiSetDest extends UndoableBookmarksAction {
 
     public static final int REPLACE = 0;

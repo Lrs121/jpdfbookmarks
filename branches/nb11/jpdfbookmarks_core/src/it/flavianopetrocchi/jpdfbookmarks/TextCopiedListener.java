@@ -24,6 +24,11 @@ package it.flavianopetrocchi.jpdfbookmarks;
 
 import java.util.EventListener;
 
+/**
+ * Listen for TextCopiedEvent.
+ * 
+ * @author fla
+ */
 public interface TextCopiedListener extends EventListener {
 
     public void textCopied(TextCopiedEvent evt);

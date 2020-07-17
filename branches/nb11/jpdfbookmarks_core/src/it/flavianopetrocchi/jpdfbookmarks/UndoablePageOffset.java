@@ -29,6 +29,11 @@ import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
+/**
+ * Set an offset hint, see PDF-1.7 (2008), §F.4.1.
+ * 
+ * @author fla
+ */
 public class UndoablePageOffset extends AbstractUndoableEdit {
 
     private DefaultTreeModel treeModel;
