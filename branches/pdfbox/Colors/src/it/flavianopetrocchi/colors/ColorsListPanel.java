@@ -19,13 +19,10 @@
  * You should have received a copy of the GNU General Public License
  * along with JPdfBookmarks.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.flavianopetrocchi.colors;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Rectangle;
 import javax.swing.Icon;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -34,48 +31,50 @@ import javax.swing.colorchooser.AbstractColorChooserPanel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class ColorsListPanel extends AbstractColorChooserPanel 
-		implements ListSelectionListener {
-	private JList list;
+public class ColorsListPanel extends AbstractColorChooserPanel
+        implements ListSelectionListener {
 
-	@Override
-	public void updateChooser() {
-		Color color = getColorFromModel();
-		Colors colorsItem = Colors.lookUp(color);
-		if (colorsItem != null) {
-			list.setSelectedValue(colorsItem, true);
-		}
-	}
+    private JList list;
 
-	@Override
-	protected void buildChooser() {
-		setLayout(new BorderLayout());
-		list = Colors.getColorsList();
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.setVisibleRowCount(20);
-		JScrollPane scroller = new JScrollPane(list);
-		add(scroller, BorderLayout.CENTER);
-		list.addListSelectionListener(this);
-	}
+    @Override
+    public void updateChooser() {
+        Color color = getColorFromModel();
+        Colors colorsItem = Colors.lookUp(color);
+        if (colorsItem != null) {
+            list.setSelectedValue(colorsItem, true);
+        }
+    }
 
-	@Override
-	public String getDisplayName() {
-		return getName();
-	}
+    @Override
+    protected void buildChooser() {
+        setLayout(new BorderLayout());
+        list = Colors.getColorsList();
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.setVisibleRowCount(20);
+        JScrollPane scroller = new JScrollPane(list);
+        add(scroller, BorderLayout.CENTER);
+        list.addListSelectionListener(this);
+    }
 
-	@Override
-	public Icon getSmallDisplayIcon() {
-		return null;
-	}
+    @Override
+    public String getDisplayName() {
+        return getName();
+    }
 
-	@Override
-	public Icon getLargeDisplayIcon() {
-		return null;
-	}
+    @Override
+    public Icon getSmallDisplayIcon() {
+        return null;
+    }
 
-	public void valueChanged(ListSelectionEvent e) {
-		Colors item = (Colors) list.getSelectedValue();
-		getColorSelectionModel().setSelectedColor(item.getColor());
-	}
+    @Override
+    public Icon getLargeDisplayIcon() {
+        return null;
+    }
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        Colors item = (Colors) list.getSelectedValue();
+        getColorSelectionModel().setSelectedColor(item.getColor());
+    }
 
 }

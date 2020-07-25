@@ -40,7 +40,7 @@ public interface IPdfView {
         public void open(File file) throws Exception;
         public void open(File file, String password) throws Exception;
         public void reopen(File file) throws Exception;
-        public void close();
+        public void close() throws Exception;
 
         // Naviagtion methods
         public void goToFirstPage();
@@ -66,7 +66,7 @@ public interface IPdfView {
         // Get page information
         public int getNumPages();
         public FitType getFitType();
-        public int getCurrentPage();
+        public int getPageNumber();
 
         // Listeners
         public void addPageChangedListener(PageChangedListener listener);

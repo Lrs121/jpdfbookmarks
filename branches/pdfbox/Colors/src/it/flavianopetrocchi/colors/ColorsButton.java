@@ -19,9 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along with JPdfBookmarks.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.flavianopetrocchi.colors;
-
 
 import java.awt.Color;
 import java.awt.FontMetrics;
@@ -31,41 +29,40 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-
 public class ColorsButton extends JButton {
 
-	private	Color color = Color.black;
-	private int iconSize = 22;
+    private Color color = Color.black;
+    private int iconSize = 22;
 
-	public ColorsButton(int iconSize) {
-		this.iconSize = iconSize;
-		setIcon(createColorIcon(iconSize));
-	}
+    public ColorsButton(int iconSize) {
+        this.iconSize = iconSize;
+        setIcon(createColorIcon(iconSize));
+    }
 
-	public ColorsButton(Icon icon) {
-		super(icon);
-	}
+    public ColorsButton(Icon icon) {
+        super(icon);
+    }
 
-	private ImageIcon createColorIcon(int iconSize) {
-		FontMetrics metrics = getFontMetrics(getFont());
-		int lenght = metrics.getHeight() - metrics.getDescent();
-		BufferedImage image = new BufferedImage(iconSize, iconSize,
-				BufferedImage.TYPE_INT_RGB);
-		Graphics g = image.getGraphics();
-		g.setColor(color);
-		g.fillRect(0, 0, lenght, lenght);
-		g.setColor(getForeground());
-		g.drawRect(0, 0, lenght - 1, lenght - 1);
-		g.dispose();
-		return new ImageIcon(image);
-	}
+    private ImageIcon createColorIcon(int iconSize) {
+        FontMetrics metrics = getFontMetrics(getFont());
+        int lenght = metrics.getHeight() - metrics.getDescent();
+        BufferedImage image = new BufferedImage(iconSize, iconSize,
+                BufferedImage.TYPE_INT_RGB);
+        Graphics g = image.getGraphics();
+        g.setColor(color);
+        g.fillRect(0, 0, lenght, lenght);
+        g.setColor(getForeground());
+        g.drawRect(0, 0, lenght - 1, lenght - 1);
+        g.dispose();
+        return new ImageIcon(image);
+    }
 
-	public Color getColor() {
-		return color;
-	}
+    public Color getColor() {
+        return color;
+    }
 
-	public void setColor(Color color) {
-		this.color = color;
-		//setIcon(createColorIcon(iconSize));
-	}
+    public void setColor(Color color) {
+        this.color = color;
+        //setIcon(createColorIcon(iconSize));
+    }
 }

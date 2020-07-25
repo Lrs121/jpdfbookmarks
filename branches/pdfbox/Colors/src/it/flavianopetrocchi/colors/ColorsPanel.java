@@ -19,7 +19,6 @@
  * You should have received a copy of the GNU General Public License
  * along with JPdfBookmarks.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.flavianopetrocchi.colors;
 
 import java.awt.Color;
@@ -29,44 +28,46 @@ import javax.swing.Icon;
 import javax.swing.JComboBox;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 
-public class ColorsPanel extends AbstractColorChooserPanel 
-		implements ItemListener{
-	private JComboBox combo;
+public class ColorsPanel extends AbstractColorChooserPanel
+        implements ItemListener {
 
-	@Override
-	public void updateChooser() {
-		Color color = getColorFromModel();
-		Colors colorsItem = Colors.lookUp(color);
-		if (colorsItem != null) {
-			combo.setSelectedItem(colorsItem);
-		}
-	}
+    private JComboBox combo;
 
-	@Override
-	protected void buildChooser() {
-		combo = Colors.getColorsChooser();
-		add(combo);
-		combo.addItemListener(this);
-	}
+    @Override
+    public void updateChooser() {
+        Color color = getColorFromModel();
+        Colors colorsItem = Colors.lookUp(color);
+        if (colorsItem != null) {
+            combo.setSelectedItem(colorsItem);
+        }
+    }
 
-	@Override
-	public String getDisplayName() {
-		return getName();
-	}
+    @Override
+    protected void buildChooser() {
+        combo = Colors.getColorsChooser();
+        add(combo);
+        combo.addItemListener(this);
+    }
 
-	@Override
-	public Icon getSmallDisplayIcon() {
-		return null;
-	}
+    @Override
+    public String getDisplayName() {
+        return getName();
+    }
 
-	@Override
-	public Icon getLargeDisplayIcon() {
-		return null;
-	}
+    @Override
+    public Icon getSmallDisplayIcon() {
+        return null;
+    }
 
-	public void itemStateChanged(ItemEvent e) {
-		Colors item = (Colors) e.getItem();
-		getColorSelectionModel().setSelectedColor(item.getColor());
-	}
+    @Override
+    public Icon getLargeDisplayIcon() {
+        return null;
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        Colors item = (Colors) e.getItem();
+        getColorSelectionModel().setSelectedColor(item.getColor());
+    }
 
 }

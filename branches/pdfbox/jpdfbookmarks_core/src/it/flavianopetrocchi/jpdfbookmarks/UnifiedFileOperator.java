@@ -47,7 +47,7 @@ public final class UnifiedFileOperator {
 
     //private IPdfView viewPanel = new PdfViewAdapter();
     //private IPdfView viewPanel = new PdfRendererViewPanel();
-    private IPdfView viewPanel = new JPedalViewPanel();
+    private final IPdfView viewPanel = new JPDFBoxViewPanel();
     private String filePath;
     private File file;
     private File tmpForViewPanel;
@@ -196,7 +196,7 @@ public final class UnifiedFileOperator {
         return root;
     }
 
-    public void close() {
+    public void close() throws Exception {
         viewPanel.close();
         if (tmpForViewPanel != null) {
             tmpForViewPanel.delete();
@@ -324,16 +324,16 @@ public final class UnifiedFileOperator {
                 }
             });
             for (IBookmarksConverter.AnnotationRect annoRect : annoRects) {
-                JPedalViewPanel jpedalView = (JPedalViewPanel) viewPanel;
-                String text = jpedalView.extractTextInRect(annoRect.llx, annoRect.ury, annoRect.urx, annoRect.lly);
-//                jpedalView.addDrawRect(annoRect.llx, annoRect.ury, Math.abs(annoRect.urx - annoRect.llx), Math.abs(annoRect.lly - annoRect.ury));
+                JPDFBoxViewPanel jpView = (JPDFBoxViewPanel) viewPanel;
+                String text = jpView.extractTextInRect(annoRect.llx, annoRect.ury, annoRect.urx, annoRect.lly);
+//                jpView.addDrawRect(annoRect.llx, annoRect.ury, Math.abs(annoRect.urx - annoRect.llx), Math.abs(annoRect.lly - annoRect.ury));
                 int sentinel = 0;
                 while (text == null && sentinel < 10) {
                     sentinel++;
-                    text = jpedalView.extractTextInRect(annoRect.llx, ++annoRect.ury, annoRect.urx, --annoRect.lly);
+                    text = jpView.extractTextInRect(annoRect.llx, ++annoRect.ury, annoRect.urx, --annoRect.lly);
                 }
 //                Rectangle rectInCrop = new Rectangle(annoRect.llx, annoRect.ury, Math.abs(annoRect.urx - annoRect.llx), Math.abs(annoRect.lly - annoRect.ury));
-//                String text = jpedalView.extractText(rectInCrop);
+//                String text = jpView.extractText(rectInCrop);
 //                int sentinel = 0;
 //                while (text == null && sentinel < 50) {
 //                    sentinel++;
@@ -341,7 +341,7 @@ public final class UnifiedFileOperator {
 //                    rectInCrop.width += 1;
 //                    rectInCrop.y -= 1;
 //                    rectInCrop.height += 1;
-//                    text = jpedalView.extractText(rectInCrop);
+//                    text = jpView.extractText(rectInCrop);
 //                }
                 if (text != null) {
                     annoRect.bookmark.setTitle(text);

@@ -98,6 +98,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -435,7 +437,12 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
             return;
         }
 
-        fileOperator.close();
+        try {
+            fileOperator.close();
+        } catch (Exception ex) {
+            // TBD: do something sensible here
+            Logger.getLogger(JPdfBookmarksGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         Frame[] frames = JFrame.getFrames();
         if (frames.length == 1) {
@@ -787,7 +794,12 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         if (!askCloseWithoutSave()) {
             return;
         }
-        fileOperator.close();
+        try {
+            fileOperator.close();
+        } catch (Exception ex) {
+            // TBD: do something sensible
+            Logger.getLogger(JPdfBookmarksGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         File file = pdfFileChooser();
         if (file != null && file.isFile()) {
@@ -862,7 +874,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
             protected void done() {
                 Bookmark root;
                 try {
-                    root = get();
+                        root = get();
                     bookmarksTree.setRootVisible(false);
                     bookmarksTree.setEditable(true);
                     if (root != null) {
@@ -1407,7 +1419,12 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
             return;
         }
 
-        fileOperator.close();
+        try {
+            fileOperator.close();
+        } catch (Exception ex) {
+            // TBD: do something sensible
+            Logger.getLogger(JPdfBookmarksGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void load() {
@@ -1674,7 +1691,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         }
         Bookmark selected = getSelectedBookmark();
         PageOffsetDialog pageOffsetDialog = new PageOffsetDialog(
-                this, viewPanel.getCurrentPage() - selected.getPageNumber(),
+                this, viewPanel.getPageNumber() - selected.getPageNumber(),
                 viewPanel.getNumPages() - maxPageNumber,
                 -minPageNumber + 1);
         pageOffsetDialog.setVisible(true);
@@ -1691,7 +1708,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
     private void goToPageDialog() {
         GoToPageDialog goToPageDialog = new GoToPageDialog(
                 JPdfBookmarksGui.this,
-                viewPanel.getCurrentPage(), viewPanel.getNumPages());
+                viewPanel.getPageNumber(), viewPanel.getNumPages());
         goToPageDialog.setVisible(true);
         if (goToPageDialog.operationNotAborted()) {
             viewPanel.goToPage(goToPageDialog.getPage());
@@ -2314,7 +2331,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
 
     private void extractLinksFromPage() {
 
-        ArrayList<Bookmark> links = fileOperator.getLinksOnPage(viewPanel.getCurrentPage());
+        ArrayList<Bookmark> links = fileOperator.getLinksOnPage(viewPanel.getPageNumber());
         if (links.isEmpty()) {
             JOptionPane.showMessageDialog(this, Res.getString("NO_LINKS_FOUND"), JPdfBookmarks.APP_NAME,
                     JOptionPane.INFORMATION_MESSAGE);
@@ -2434,7 +2451,13 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
             if (!askCloseWithoutSave()) {
                 return;
             }
-            fileOperator.close();
+
+            try {
+                fileOperator.close();
+            } catch (Exception ex) {
+                // TBD: do something sensible here
+                Logger.getLogger(JPdfBookmarksGui.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             if (f != null && f.isFile()) {
                 //close();
@@ -3625,7 +3648,12 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
                         if (!askCloseWithoutSave()) {
                             return;
                         }
-                        fileOperator.close();
+                        try {
+                            fileOperator.close();
+                        } catch (Exception ex) {
+                            // TBD: do something sensible here
+                            Logger.getLogger(JPdfBookmarksGui.class.getName()).log(Level.SEVERE, null, ex);
+                        }
 
                         if (f != null && f.isFile()) {
                             //close();

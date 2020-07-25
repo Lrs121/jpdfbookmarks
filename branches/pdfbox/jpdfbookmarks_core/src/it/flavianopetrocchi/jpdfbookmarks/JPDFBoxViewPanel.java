@@ -1,5 +1,5 @@
 /*
- * JPedalViewPanel.java
+ * JPDFBoxViewPanel.java
  * 
  * Copyright (c) 2010 Flaviano Petrocchi <flavianopetrocchi at gmail.com>.
  * All rights reserved.
@@ -22,6 +22,15 @@
 package it.flavianopetrocchi.jpdfbookmarks;
 
 import it.flavianopetrocchi.jpdfbookmarks.bookmark.Bookmark;
+
+// Utility Java classes
+import java.lang.Float;
+import static java.lang.Math.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+// GUI components.
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -48,9 +57,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -58,64 +66,73 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.Scrollable;
 import javax.swing.SwingUtilities;
-import org.jpedal.PdfDecoder;
-import org.jpedal.examples.simpleviewer.Values;
-import org.jpedal.examples.simpleviewer.gui.generic.GUIThumbnailPanel;
-import org.jpedal.examples.simpleviewer.gui.swing.SwingThumbnailPanel;
-import org.jpedal.grouping.PdfGroupingAlgorithms;
-import org.jpedal.objects.PdfPageData;
-import org.jpedal.utils.sleep;
+
+// PDFBox components
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.rendering.PDFRenderer;
 
 /**
- * JPedal-based PDF viewer.
- * 
+ * PDFBox-based PDF page viewer.
+ *
+ * PDF, per the 2008 PDF-1.7 standard, counts pages by their distance from the
+ * first page; the standard refers to "page index" and "page label" and
+ * sometimes page number. The page index starts at 0
+ *
  * @author fla
+ * @author rmfritz
  */
-public class JPedalViewPanel extends JScrollPane implements IPdfView {
+public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
 
     // <editor-fold defaultstate="collapsed" desc="Members">
     private static final int MIN_RECT_WIDTH = 100;
     private static final int MIN_RECT_HEIGHT = 100;
     private static final float MIN_SCALE = 0.001f;
     private static final float MAX_SCALE = 4.0f;
+
     private final Font textFont = new Font("Serif", Font.PLAIN, 12);
-    private ArrayList<PageChangedListener> pageChangedListeners =
-            new ArrayList<PageChangedListener>();
-    private ArrayList<ViewChangedListener> viewChangedListeners =
-            new ArrayList<ViewChangedListener>();
-    private ArrayList<RenderingStartListener> renderingStartListeners =
-            new ArrayList<RenderingStartListener>();
-    private ArrayList<TextCopiedListener> textCopiedListeners =
-            new ArrayList<TextCopiedListener>();
+
+    private final ArrayList<PageChangedListener> pageChangedListeners
+            = new ArrayList<>();
+    private final ArrayList<ViewChangedListener> viewChangedListeners
+            = new ArrayList<>();
+    private final ArrayList<RenderingStartListener> renderingStartListeners
+            = new ArrayList<>();
+    private final ArrayList<TextCopiedListener> textCopiedListeners
+            = new ArrayList<>();
+
+    private PDDocument document;
+    private PDPage page;
+    private PDFRenderer renderer;
+    private BufferedImage pageImage, seImage;
+
     private int top = -1;
     private int left = -1;
-    private int bottom = -1;
-    private int right = -1;
+    private final int bottom = -1;
+    private final int right = -1;
     private float scale = 1.0f;
-    private int currentPage;
+    private int pageIndex;
     private int oldPage = -2;
     private PdfRenderPanel rendererPanel;
-    //private PdfRenderer rendererPanel;
     private FitType fitType = FitType.FitPage;
     private int numberOfPages;
-    private PdfPageData pdfPageData;
     private boolean drawingComplete = true;
-    //private Rectangle rect = null;
     private Rectangle drawingRect;
     private Rectangle rectInCropBox;
-    //private Rectangle rectInMediaBox;
-    private BufferedImage img, cloneImg;
     private float oldScale;
     volatile boolean painting = false;
-    private PdfDecoder decoder;
+
+    //These may be in pixels; I am arbitrarily assuming 72 ppi
     private int cropBoxX, cropBoxY;
     private int cropBoxWidth, cropBoxHeight;
     private int mediaBoxWidth, mediaBoxHeight;
+
+    // 
     private Cursor rectRedCur, rectBlueCur;
     private Boolean textSelectionActive = false;
     private String copiedText;
     private Boolean connectToClipboard = false;
-    private Values commonValues = new Values();
     private ThumbnailsPanel thumbnails;
     private JScrollBar vbar;// </editor-fold>
 
@@ -124,52 +141,43 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
         open(file, null);
     }
 
+    /**
+     *
+     * @param file
+     * @param password
+     * @throws IOException
+     */
     @Override
-    public void open(File file, String password) throws Exception {
-        if (decoder == null) {
-            decoder = new PdfDecoder();
-            decoder.setExtractionMode(PdfDecoder.TEXT);
-            PdfDecoder.init(true);
-        }
-
-        if (thumbnails == null) {
-            thumbnails = new ThumbnailsPanel(commonValues, decoder);
-            addPageChangedListener(thumbnails);
-        }
-
+    public void open(File file, String password) throws IOException {
         if (password != null) {
-            decoder.setEncryptionPassword(password);
+            document = PDDocument.load(file, password);
+        } else {
+            document = PDDocument.load(file);
         }
-        decoder.openPdfFile(file.getCanonicalPath());
-
-        pdfPageData = decoder.getPdfPageData();
-        numberOfPages = decoder.getPageCount();
-        updateCurrentPageBoxes();
-//        if (SwingUtilities.isEventDispatchThread()) {
-//            updateCurrentPageBoxes();
-//        } else {
-//            SwingUtilities.invokeAndWait(new Runnable() {
-//
-//                @Override
-//                public void run() {
-//                    updateCurrentPageBoxes();
-//                }
-//            });
+        // TBD - what happens if the document can't be loaded?
+        renderer = new PDFRenderer(document);
+        thumbnails = null;
+//        if (thumbnails == null) {
+//            thumbnails = new ThumbnailsPanel(commonValues, decoder);
+//            addPageChangedListener(thumbnails);
 //        }
 
-//        thumbnails = new ThumbnailsPanel(commonValues, decoder);
-//        addPageChangedListener(thumbnails);
-//        thumbnails.resetToDefault();
-        thumbnails.setupThumbnails(numberOfPages, textFont, Res.getString("PAGE"), pdfPageData);
-        thumbnails.addComponentListener();
-        Object[] buttons = thumbnails.getButtons();
-        for (int i = 0; i < buttons.length; i++) {
-            ((JButton) buttons[i]).addActionListener(new ThumbnailListener(i));
-        }
+        numberOfPages = document.getNumberOfPages();
+        // if there's actually a first page, get it
+        page = numberOfPages > 0 ? document.getPage(0) : null;
+        updateCurrentPageBoxes();
 
-//        updateCurrentPageBoxes();
+//        thumbnails.setupThumbnails(numberOfPages, textFont, Res.getString("PAGE"), pdfPageData);
+//        thumbnails.addComponentListener();
+//        Object[] buttons = thumbnails.getButtons();
+//        for (int i = 0; i < buttons.length; i++) {
+//            ((JButton) buttons[i]).addActionListener(new ThumbnailListener(i));
+//        }
     }
 
+    /**
+     * Responds to actions on the thumbnails pane
+     */
     private class ThumbnailListener implements ActionListener {
 
         private int page = 1;
@@ -191,30 +199,29 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
 
     @Override
     public void reopen(File file) throws Exception {
-        int pageCurrentlyDisplayed = currentPage;
+        int pageCurrentlyDisplayed = pageIndex;
         close();
-        currentPage = pageCurrentlyDisplayed;
+        pageIndex = pageCurrentlyDisplayed;
         open(file);
     }
 
     @Override
-    public void close() {
-        if (decoder != null) {
-            decoder.closePdfFile();
-//            decoder.dispose();
-            decoder = null;
+    public void close() throws IOException {
+        if (document == null) {
+            return;
         }
+        document.close();
+        document = null;
         if (thumbnails != null) {
             thumbnails.dispose();
             thumbnails = null;
         }
-        img = null;
-        currentPage = 0;
+        pageIndex = -1;
         setCopiedText(null);
         rendererPanel.repaint();
     }
 
-    public JPedalViewPanel() {
+    public JPDFBoxViewPanel() {
         vbar = getVerticalScrollBar();
         rendererPanel = new PdfRenderPanel();
         viewport.setBackground(Color.gray);
@@ -222,7 +229,6 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
         rendererPanel.addKeyListener(new PdfViewKeyListener());
         addMouseWheelListener(new PdfViewMouseWheelListener());
         addComponentListener(new ResizeListener());
-        PdfDecoder.useTextExtraction();
 
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Point hotSpot = new Point(8, 7);
@@ -256,23 +262,23 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
         }
 
         if (fitType.equals(FitType.FitPage)) {
-            if (wheelRotations < 0 && currentPage > 0) {
+            if (wheelRotations < 0 && pageIndex > 0) {
                 goToPreviousPage();
-            } else if (wheelRotations > 0 && currentPage < (numberOfPages - 1)) {
+            } else if (wheelRotations > 0 && pageIndex < (numberOfPages - 1)) {
                 goToNextPage();
             }
             return;
         }
 
         Point location = rendererPanel.getLocation();
-        int panelY = Math.abs(location.y);
+        int panelY = abs(location.y);
         int panelHeight = rendererPanel.getSize().height;
         int viewportHeight = viewport.getSize().height;
         if (panelY == (panelHeight - viewportHeight)
-                && currentPage < (numberOfPages - 1)) {
+                && pageIndex < (numberOfPages - 1)) {
             goToNextPage();
             vbar.setValue(vbar.getMinimum());
-        } else if (panelY == 0 && currentPage > 0) {
+        } else if (panelY == 0 && pageIndex > 0) {
             goToPreviousPage();
             vbar.setValue(vbar.getMaximum());
         }
@@ -291,11 +297,11 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
                 case KeyEvent.VK_PAGE_DOWN:
                 case KeyEvent.VK_DOWN:
                     Point location = rendererPanel.getLocation();
-                    int panelY = Math.abs(location.y);
+                    int panelY = abs(location.y);
                     int panelHeight = rendererPanel.getSize().height;
                     int viewportHeight = viewport.getSize().height;
                     if (panelY == (panelHeight - viewportHeight)
-                            && currentPage < (numberOfPages - 1)) {
+                            && pageIndex < (numberOfPages - 1)) {
                         goToNextPage();
                         vbar.setValue(vbar.getMinimum());
                     }
@@ -303,8 +309,8 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
                 case KeyEvent.VK_PAGE_UP:
                 case KeyEvent.VK_UP:
                     location = rendererPanel.getLocation();
-                    panelY = Math.abs(location.y);
-                    if (panelY == 0 && currentPage > 0) {
+                    panelY = abs(location.y);
+                    if (panelY == 0 && pageIndex > 0) {
                         goToPreviousPage();
                         vbar.setValue(vbar.getMaximum());
                     }
@@ -317,7 +323,7 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
         }
     }
 
-    public JPedalViewPanel(FitType fitType) {
+    public JPDFBoxViewPanel(FitType fitType) {
         this();
         this.fitType = fitType;
     }
@@ -329,52 +335,77 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
 
     @Override
     public void goToPreviousPage() {
-        goToPage(currentPage);
+        goToPageIndex(pageIndex - 1);
     }
 
+    /**
+     * Display page pageNum. Page numbers begin at 1.
+     *
+     * TBD: provide a mechanism to go to a page label (i, ix, 1, 222, A-1, A-33,
+     * etc.)
+     *
+     * @param pageNum
+     */
     @Override
-    public void goToPage(int numPage) {
-        boolean hasNext = true;
-        boolean hasPrevious = true;
+    public void goToPage(int pageNum) {
+        goToPageIndex(pageNum - 1);
+    }
 
-        if (numberOfPages == 1) {
-            currentPage = 0;
-            hasPrevious = false;
-            hasNext = false;
-        } else if (numPage <= 1) {
-            currentPage = 0;
-            hasPrevious = false;
-        } else if (numPage >= numberOfPages) {
-            currentPage = numberOfPages - 1;
-            hasNext = false;
+    /**
+     * Display page pageIndex. Page indices begin at 0.
+     *
+     * Set the pageIndex, update the shape of the page, repaint the page, and
+     * fire a PageChangedEvent.
+     *
+     * @param pindex - the PDF index of the requested page.
+     */
+    private void goToPageIndex(int pindex) {
+
+        if (pindex < 0) {
+            pageIndex = 0;
+        } else if (pindex >= numberOfPages) {
+            pageIndex = numberOfPages - 1;
         } else {
-            currentPage = numPage - 1;
+            pageIndex = pindex;
         }
+
+        boolean hasPrevious = (pageIndex > 0);
+        boolean hasNext = (pageIndex < (numberOfPages - 1));
 
         updateCurrentPageBoxes();
 
         rendererPanel.repaint();
 
-        firePageChangedEvent(new PageChangedEvent(this, currentPage + 1, hasNext,
+        // PageChangedEvent uses the pageIndex + 1 as the user-visible page number
+        firePageChangedEvent(new PageChangedEvent(this, pageIndex + 1, hasNext,
                 hasPrevious));
     }
 
+    /**
+     * transfer the page geometry from the PDF page to the screen canvas
+     *
+     * Currently this code assumes that one Adobe point (1/72 inch) = one canvas
+     * unit. This may change
+     */
     private void updateCurrentPageBoxes() {
-        if (pdfPageData == null) {
+        if (page == null) {
             return;
         }
-        int p = currentPage + 1; //JPedal is one based counting pages
-        cropBoxX = pdfPageData.getCropBoxX(p);
-        cropBoxY = pdfPageData.getCropBoxY(p);
-        cropBoxWidth = pdfPageData.getCropBoxWidth(p);
-        cropBoxHeight = pdfPageData.getCropBoxHeight(p);
-        mediaBoxWidth = pdfPageData.getMediaBoxWidth(p);
-        mediaBoxHeight = pdfPageData.getMediaBoxHeight(p);
+
+        PDRectangle cb = page.getCropBox();
+        cropBoxX = (int) cb.getLowerLeftX();
+        cropBoxY = (int) cb.getLowerLeftY();
+        cropBoxWidth = (int) cb.getWidth();
+        cropBoxHeight = (int) cb.getHeight();
+
+        PDRectangle mb = page.getMediaBox();
+        mediaBoxWidth = (int) mb.getWidth();
+        mediaBoxHeight = (int) mb.getHeight();
     }
 
     @Override
     public void goToNextPage() {
-        goToPage(currentPage + 2);
+        goToPageIndex(pageIndex + 1);
     }
 
     @Override
@@ -418,9 +449,9 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
     public void setFitRect(int top, int left, int bottom, int right) {
         drawingComplete = true;
 //        rectInMediaBox = new Rectangle(left, top,
-//                Math.abs(right - left), Math.abs(bottom - top));
+//                abs(right - left), abs(bottom - top));
         rectInCropBox = new Rectangle(left - cropBoxX, mediaBoxHeight - top - cropBoxY,
-                Math.abs(right - left), Math.abs(bottom - top));
+                abs(right - left), abs(bottom - top));
         setFit(FitType.FitRect);
     }
 
@@ -452,9 +483,14 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
         return numberOfPages;
     }
 
+    /**
+     * Get the current 1-based page number
+     *
+     * @return The current page number
+     */
     @Override
-    public int getCurrentPage() {
-        return currentPage + 1;
+    public int getPageNumber() {
+        return pageIndex + 1;
     }
 
     @Override
@@ -484,7 +520,7 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
             @Override
             public void run() {
 
-                if (JPedalViewPanel.this.fitType == FitType.FitRect) {
+                if (JPDFBoxViewPanel.this.fitType == FitType.FitRect) {
 //                    viewport.setCursor(Cursor.getPredefinedCursor(
 //                            Cursor.CROSSHAIR_CURSOR));
                     if (!textSelectionActive) {
@@ -503,6 +539,7 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
         rendererPanel.repaint();
     }
 
+    @Override
     public void setTextSelectionMode(boolean set) {
         if (set) {
             viewport.setCursor(rectBlueCur);
@@ -528,10 +565,10 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
         pt.x = xmove;
         pt.y = ymove;
 
-        pt.x = Math.max(0, pt.x);
-        pt.x = Math.min(getMaxXExtent(), pt.x);
-        pt.y = Math.max(0, pt.y);
-        pt.y = Math.min(getMaxYExtent(), pt.y);
+        pt.x = max(0, pt.x);
+        pt.x = min(getMaxXExtent(), pt.x);
+        pt.y = max(0, pt.y);
+        pt.y = min(getMaxYExtent(), pt.y);
 
         viewport.setViewPosition(pt);
     }
@@ -544,41 +581,49 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
         return viewport.getView().getHeight() - viewport.getHeight();
     }
 
+    /**
+     * TBD: explain this method
+     */
     private void calcScaleFactor() {
-        //float zoom = 1f;
         switch (fitType) {
             case FitWidth:
-                scale = (float) viewport.getWidth()
-                        / cropBoxWidth;
+                scale = fdiv(viewport.getWidth(), cropBoxWidth);
                 break;
             case FitHeight:
-                scale = (float) viewport.getHeight()
-                        / cropBoxHeight;
+                scale = fdiv(viewport.getHeight(), cropBoxHeight);
                 break;
             case FitNative:
                 scale = 1.0f;
                 break;
             case FitRect:
                 if (rectInCropBox != null && drawingComplete && !textSelectionActive) {
-                    float scaleWidth = (float) viewport.getWidth()
-                            / rectInCropBox.width;
-                    float scaleHeight = (float) viewport.getHeight()
-                            / rectInCropBox.height;
-                    scale = Math.min(scaleWidth, scaleHeight);
+                    float scaleWidth = fdiv(viewport.getWidth(), rectInCropBox.width);
+                    float scaleHeight = fdiv(viewport.getHeight(), rectInCropBox.height);
+                    scale = min(scaleWidth, scaleHeight);
                 }
                 break;
             case FitPage:
-                float scaleWidth = (float) viewport.getWidth()
-                        / cropBoxWidth;
-                float scaleHeight = (float) viewport.getHeight()
-                        / cropBoxHeight;
-                scale = Math.min(scaleWidth, scaleHeight);
+                float scaleWidth = fdiv(viewport.getWidth(), cropBoxWidth);
+                float scaleHeight = fdiv(viewport.getHeight(), cropBoxHeight);
+                scale = min(scaleWidth, scaleHeight);
                 break;
         }
-        if (Double.isNaN(scale) || Double.isInfinite(scale)) {
+        if (Float.isNaN(scale) || Float.isInfinite(scale)) {
             scale = 1.0f;
         }
-        //setScale(zoom);
+    }
+
+    /**
+     * Convert two numbers to floating point and return their quotient. This is
+     * used to get reasonably accurate scale factors from the ratio of integer
+     * screen geometry ratios.
+     *
+     * @param a The dividend
+     * @param b The divisor
+     * @return The quotient
+     */
+    static private float fdiv(float a, float b) {
+        return a / b;
     }
 
     private void adjustPreferredSize() {
@@ -592,8 +637,7 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
                 String text = (String) t.getTransferData(DataFlavor.stringFlavor);
                 return text;
             }
-        } catch (UnsupportedFlavorException e) {
-        } catch (IOException e) {
+        } catch (UnsupportedFlavorException | IOException e) {
         }
         return null;
     }
@@ -609,33 +653,32 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
         } else if (copiedText != null) {
             bookmark.setTitle(copiedText);
         }
-        bookmark.setPageNumber(getCurrentPage());
+        bookmark.setPageNumber(getPageNumber());
         bookmark.setType(getFitType().convertToBookmarkType());
         Point pt = viewport.getViewPosition();
         switch (bookmark.getType()) {
             case FitWidth:
-                bookmark.setTop(Math.round(
-                        (cropBoxHeight - (pt.y / scale)) + cropBoxY));
+                bookmark.setTop(round((cropBoxHeight - (pt.y / scale)) + cropBoxY));
                 bookmark.setThousandthsTop(
                         Bookmark.thousandthsVertical(bookmark.getTop(),
-                        mediaBoxHeight));
+                                mediaBoxHeight));
                 break;
             case FitHeight:
-                bookmark.setLeft(Math.round((pt.x / scale) + cropBoxX));
+                bookmark.setLeft(round((pt.x / scale) + cropBoxX));
                 bookmark.setThousandthsLeft(
                         Bookmark.thousandthsHorizontal(bookmark.getLeft(),
-                        mediaBoxWidth));
+                                mediaBoxWidth));
                 break;
             case TopLeftZoom:
-                bookmark.setTop(Math.round(
+                bookmark.setTop(round(
                         (cropBoxHeight - (pt.y / scale)) + cropBoxY));
                 bookmark.setThousandthsTop(
                         Bookmark.thousandthsVertical(bookmark.getTop(),
-                        mediaBoxHeight));
-                bookmark.setLeft(Math.round((pt.x / scale) + cropBoxX));
+                                mediaBoxHeight));
+                bookmark.setLeft(round((pt.x / scale) + cropBoxX));
                 bookmark.setThousandthsLeft(
                         Bookmark.thousandthsHorizontal(bookmark.getLeft(),
-                        mediaBoxWidth));
+                                mediaBoxWidth));
                 bookmark.setZoom(scale);
                 break;
             case FitRect:
@@ -646,19 +689,19 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
                     bookmark.setLeft(p.x + cropBoxX);
                     bookmark.setThousandthsLeft(
                             Bookmark.thousandthsHorizontal(bookmark.getLeft(),
-                            mediaBoxWidth));
+                                    mediaBoxWidth));
                     bookmark.setTop(mediaBoxHeight - (p.y + cropBoxY));
                     bookmark.setThousandthsTop(
                             Bookmark.thousandthsVertical(bookmark.getTop(),
-                            mediaBoxHeight));
+                                    mediaBoxHeight));
                     bookmark.setRight(p.x + d.width + cropBoxX);
                     bookmark.setThousandthsRight(
                             Bookmark.thousandthsHorizontal(bookmark.getRight(),
-                            mediaBoxWidth));
+                                    mediaBoxWidth));
                     bookmark.setBottom(mediaBoxHeight - (p.y + d.height + cropBoxY));
                     bookmark.setThousandthsBottom(
                             Bookmark.thousandthsVertical(bookmark.getBottom(),
-                            mediaBoxHeight));
+                                    mediaBoxHeight));
                 }
                 break;
         }
@@ -669,18 +712,18 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
         float scaledCropBoxWidth = cropBoxWidth * scale;
         float scaledCropBoxHeight = cropBoxHeight * scale;
 
-        int viewWidth = Math.max(Math.round(scaledCropBoxWidth),
+        int viewWidth = max(round(scaledCropBoxWidth),
                 viewport.getWidth());
-        int viewHeight = Math.max(Math.round(scaledCropBoxHeight),
+        int viewHeight = max(round(scaledCropBoxHeight),
                 viewport.getHeight());
 
         switch (fitType) {
             case FitWidth:
-                viewHeight = Math.round(scaledCropBoxHeight
+                viewHeight = round(scaledCropBoxHeight
                         + viewport.getHeight());
                 break;
             case FitHeight:
-                viewWidth = Math.round(scaledCropBoxWidth)
+                viewWidth = round(scaledCropBoxWidth)
                         + viewport.getWidth();
                 break;
             case FitPage:
@@ -689,9 +732,9 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
             case FitRect:
             case TopLeftZoom:
                 viewWidth = viewport.getWidth()
-                        + Math.round(scaledCropBoxWidth);
+                        + round(scaledCropBoxWidth);
                 viewHeight = viewport.getHeight()
-                        + Math.round(scaledCropBoxHeight);
+                        + round(scaledCropBoxHeight);
                 break;
         }
 
@@ -710,19 +753,19 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
             case FitWidth:
                 if (top != -1) {
                     float gap = (scaledMediaBoxHeight - top * scale) - scaledCropBoxY;
-                    movePanel(0, Math.round(gap));
+                    movePanel(0, round(gap));
                 }
                 break;
             case FitHeight:
                 if (left != -1) {
                     float gap = (left * scale) - scaledCropBoxX;
-                    movePanel(Math.round(gap), 0);
+                    movePanel(round(gap), 0);
                 }
                 break;
             case FitRect:
                 if (rectInCropBox != null && drawingComplete) {
-                    movePanel(Math.round(rectInCropBox.x * scale),
-                            Math.round(rectInCropBox.y * scale));
+                    movePanel(round(rectInCropBox.x * scale),
+                            round(rectInCropBox.y * scale));
                 }
                 break;
             case TopLeftZoom:
@@ -730,12 +773,12 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
                 int gapWidth;
                 Point pt = viewport.getViewPosition();
                 if (top != -1) {
-                    gapHeight = Math.round((scaledMediaBoxHeight - top * scale) - scaledCropBoxY);
+                    gapHeight = round((scaledMediaBoxHeight - top * scale) - scaledCropBoxY);
                 } else {
                     gapHeight = pt.y;
                 }
                 if (left != -1) {
-                    gapWidth = Math.round((left * scale) - scaledCropBoxX);
+                    gapWidth = round((left * scale) - scaledCropBoxX);
                 } else {
                     gapWidth = pt.x;
                 }
@@ -827,49 +870,44 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
     @Override
     public String extractText(Rectangle rectInCrop) {
         String text = null;
-        try {
-            int page = currentPage + 1;
-            decoder.decodePage(page);
-            PdfGroupingAlgorithms currentGrouping = decoder.getGroupingObject();
-            int x1 = rectInCrop.x + cropBoxX;
-            int x2 = rectInCrop.x + rectInCrop.width + cropBoxX;
-            int y1 = mediaBoxHeight - cropBoxY - rectInCrop.y;
-            int y2 = mediaBoxHeight - cropBoxY - rectInCrop.y - rectInCrop.height;
-            text = currentGrouping.extractTextInRectangle(x1, y1,
-                    x2, y2, page, false, true);
-            int sentinel = 0;
-            while (text == null && sentinel < 10) {
-                sentinel++;
-                text = currentGrouping.extractTextInRectangle(--x1, ++y1,
-                        ++x2, --y2, page, false, true);
-            }
-        } catch (Exception ex) {
-        }
+//        try {
+//            // TBD: extract text from a selection rectangle goes here
+//            int x1 = rectInCrop.x + cropBoxX;
+//            int x2 = rectInCrop.x + rectInCrop.width + cropBoxX;
+//            int y1 = mediaBoxHeight - cropBoxY - rectInCrop.y;
+//            int y2 = mediaBoxHeight - cropBoxY - rectInCrop.y - rectInCrop.height;
+//            text = currentGrouping.extractTextInRectangle(x1, y1,
+//                    x2, y2, page, false, true);
+//            int sentinel = 0;
+//            while (text == null && sentinel < 10) {
+//                sentinel++;
+//                text = currentGrouping.extractTextInRectangle(--x1, ++y1,
+//                        ++x2, --y2, page, false, true);
+//            }
+//        } catch (Exception ex) {
+//        }
 
         return text;
     }
 
     public String extractTextInRect(int tlx, int tly, int brx, int bry) {
         String text = null;
-        try {
-            int page = currentPage + 1;
-            decoder.decodePage(page);
-            PdfGroupingAlgorithms currentGrouping = decoder.getGroupingObject();
-            text = currentGrouping.extractTextInRectangle(tlx, tly,
-                    brx, bry, page, true, true);
-        } catch (Exception ex) {
-        }
+//        // TBD: extract text from a selection rectangle goes here
+//        try {
+//            int page = pageIndex + 1;
+//            decoder.decodePage(page);
+//            PdfGroupingAlgorithms currentGrouping = decoder.getGroupingObject();
+//            text = currentGrouping.extractTextInRectangle(tlx, tly,
+//                    brx, bry, page, true, true);
+//        } catch (Exception ex) {
+//        }
 
         return text;
     }
 
-//    private ArrayList<Rectangle> rects = new ArrayList<Rectangle>();
-//
-//    public void addDrawRect(int x, int y, int width, int height) {
-//        Rectangle rect = new Rectangle(x, mediaBoxHeight - y, width, height);
-//        rects.add(rect);
-//        rendererPanel.revalidate();
-//    }
+    /**
+     * scrollable panel where PDF pages are viewed.
+     */
     private class PdfRenderPanel extends JPanel implements Scrollable {
 
         public PdfRenderPanel() {
@@ -885,7 +923,7 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
 
-            if (decoder == null || pdfPageData == null) {
+            if (document == null || page == null) {
                 setPreferredSize(viewport.getSize());
                 revalidate();
                 return;
@@ -895,83 +933,64 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
 
             calcScaleFactor();
 
-            if (oldScale != scale || currentPage != oldPage || img == null) {
-                CursorToolkit.startWaitCursor(JPedalViewPanel.this);
+            if (oldScale != scale || pageIndex != oldPage || pageImage == null) {
+                CursorToolkit.startWaitCursor(JPDFBoxViewPanel.this);
                 try {
-                    decoder.setPageParameters(scale, currentPage + 1);
-                    img = decoder.getPageAsImage(currentPage + 1);
+                    // TBD: page scaling, clipping, text selection
+                    pageImage = renderer.renderImage(pageIndex, scale);
                     oldScale = scale;
-                    oldPage = currentPage;
-                } catch (Exception e) {
+                    oldPage = pageIndex;
+                } catch (IOException e) {
                     JPdfBookmarks.printErrorForDebug(e);
                 } finally {
-                    CursorToolkit.stopWaitCursor(JPedalViewPanel.this);
+                    CursorToolkit.stopWaitCursor(JPDFBoxViewPanel.this);
                 }
                 if (fitType == FitType.FitRect || textSelectionActive) {
-                    cloneImg = new BufferedImage(img.getWidth(),
-                            img.getHeight(), img.getType());
+                    seImage = new BufferedImage(
+                            pageImage.getWidth(), pageImage.getHeight(), pageImage.getType());
                 }
             }
 
             setPreferredSize(calcViewSize());
             revalidate();
 
-            if (img != null) {
+            if (pageImage != null) {
                 if (fitType == FitType.FitRect || textSelectionActive) {
-                    if (cloneImg == null) {
-                        cloneImg = new BufferedImage(img.getWidth(),
-                                img.getHeight(), img.getType());
+                    if (seImage == null) {
+                        seImage = new BufferedImage(pageImage.getWidth(),
+                                pageImage.getHeight(), pageImage.getType());
                     }
-                    Graphics2D g2CloneImg = (Graphics2D) cloneImg.getGraphics();
-                    g2CloneImg.drawImage(img, 0, 0, null);
-                    g2CloneImg.setStroke(new BasicStroke());
+                    Graphics2D g2seImage = (Graphics2D) seImage.getGraphics();
+                    g2seImage.drawImage(pageImage, 0, 0, null);
+                    g2seImage.setStroke(new BasicStroke());
                     if (textSelectionActive) {
-                        g2CloneImg.setColor(Color.blue);
+                        g2seImage.setColor(Color.blue);
                     } else {
-                        g2CloneImg.setColor(Color.red);
+                        g2seImage.setColor(Color.red);
                     }
 
                     if (drawingComplete == false) {
-                        g2CloneImg.drawRect(drawingRect.x, drawingRect.y, drawingRect.width,
+                        g2seImage.drawRect(drawingRect.x, drawingRect.y, drawingRect.width,
                                 drawingRect.height);
                         if (textSelectionActive) {
-                            g2CloneImg.setColor(new Color(0, 0, 255, 50));
-                            g2CloneImg.fillRect(drawingRect.x, drawingRect.y, drawingRect.width,
+                            g2seImage.setColor(new Color(0, 0, 255, 50));
+                            g2seImage.fillRect(drawingRect.x, drawingRect.y, drawingRect.width,
                                     drawingRect.height);
                         }
                     } else {
                         if (!textSelectionActive) {
-                            g2CloneImg.drawRect(Math.round(rectInCropBox.x * scale),
+                            g2seImage.drawRect(Math.round(rectInCropBox.x * scale),
                                     Math.round(rectInCropBox.y * scale),
                                     Math.round(scale * rectInCropBox.width),
                                     Math.round(scale * rectInCropBox.height));
                         } else {
-                            g2CloneImg.drawImage(img, 0, 0, this);
+                            g2seImage.drawImage(pageImage, 0, 0, this);
                         }
                     }
-
-                    g2.drawImage(cloneImg, 0, 0, this);
-
+                    g2.drawImage(seImage, 0, 0, this);
                 } else {
-//                    if (!rects.isEmpty()) {
-//                        if (cloneImg == null) {
-//                            cloneImg = new BufferedImage(img.getWidth(),
-//                                    img.getHeight(), img.getType());
-//                        }
-//                        Graphics2D g2CloneImg = (Graphics2D) cloneImg.getGraphics();
-//                        g2CloneImg.drawImage(img, 0, 0, this);
-//                        g2CloneImg.setColor(Color.gray);
-//                        for (Rectangle r : rects) {
-//                            g2CloneImg.drawRect(r.x, r.y, r.width, r.height);
-//                        }
-//                        g2.drawImage(cloneImg, 0, 0, this);
-//                    } else {
-
-                    g2.drawImage(img, 0, 0, this);
-//                    }
+                    g2.drawImage(pageImage, 0, 0, this);
                 }
-
-
             }
 
             Bookmark bookmark = getBookmarkFromView();
@@ -991,8 +1010,8 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
                     if (e.getY() < yDiff) {
                         drawingRect.setLocation(drawingRect.x, e.getY());
                     }
-                    int rectWidth = Math.abs(e.getX() - xDiff);
-                    int rectHeight = Math.abs(e.getY() - yDiff);
+                    int rectWidth = abs(e.getX() - xDiff);
+                    int rectHeight = abs(e.getY() - yDiff);
                     drawingRect.setSize(rectWidth, rectHeight);
                     repaint();
                 } else {
@@ -1046,21 +1065,21 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
                     rectInCropBox = new Rectangle(cropBoxX, cropBoxY,
                             cropBoxWidth, cropBoxHeight);
 
-                    rectInCropBox.setLocation(Math.round(drawingRect.x / scale),
-                            Math.round(drawingRect.y / scale));
+                    rectInCropBox.setLocation(round(drawingRect.x / scale),
+                            round(drawingRect.y / scale));
 
                     if (textSelectionActive) {
-                        rectInCropBox.setSize(Math.round(drawingRect.width / scale),
-                                Math.round(drawingRect.height / scale));
+                        rectInCropBox.setSize(round(drawingRect.width / scale),
+                                round(drawingRect.height / scale));
                         setCopiedText(extractText(rectInCropBox));
                         //repaint(); //uncomment to remove the selection rect immediately
                     } else {
-                        rectInCropBox.setSize(Math.round(drawingRect.width / scale),
-                                Math.round(drawingRect.height / scale));
-//                        int width = Math.max(MIN_RECT_WIDTH,
-//                                Math.round(drawingRect.width / scale));
-//                        int height = Math.max(MIN_RECT_HEIGHT,
-//                                Math.round(drawingRect.height / scale));
+                        rectInCropBox.setSize(round(drawingRect.width / scale),
+                                round(drawingRect.height / scale));
+//                        int width = max(MIN_RECT_WIDTH,
+//                                round(drawingRect.width / scale));
+//                        int height = max(MIN_RECT_HEIGHT,
+//                                round(drawingRect.height / scale));
 //                        rectInCropBox.setSize(width, height);
                         setFitRect(rectInCropBox);
                     }
@@ -1073,7 +1092,7 @@ public class JPedalViewPanel extends JScrollPane implements IPdfView {
 //        private String extractText(Rectangle rectInCrop) {
 //            String text = null;
 //            try {
-//                int page = currentPage + 1;
+//                int page = pageIndex + 1;
 //                decoder.decodePage(page);
 //                PdfGroupingAlgorithms currentGrouping = decoder.getGroupingObject();
 //                int x1 = rectInCrop.x + cropBoxX;

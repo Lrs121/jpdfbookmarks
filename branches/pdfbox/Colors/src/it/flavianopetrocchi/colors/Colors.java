@@ -26,9 +26,7 @@ import java.awt.Component;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -36,8 +34,11 @@ import javax.swing.ListCellRenderer;
 import javax.swing.border.EmptyBorder;
 
 /**
- * The enum contains a complete list of the 140 color names supported by all
- * major browsers.
+ * The enum contains a complete list of the color names supported by all major
+ * browsers as of 2012. These are related to the old X11 color names (see
+ * https://en.wikipedia.org/wiki/X11_color_names) and also to the newer CSS 3
+ * color keywords (see https://www.w3.org/TR/2018/REC-css-color-3-20180619/) but
+ * are not quite the same as either.
  */
 public enum Colors {
 
@@ -328,6 +329,7 @@ public enum Colors {
          * to the selected value and returns the label, set up
          * to display the text and image.
          */
+        @Override
         public Component getListCellRendererComponent(
                 JList list,
                 Object value,
@@ -361,6 +363,6 @@ public enum Colors {
             return this;
         }
     }
-    private int rgb;
-    private Color color;
+    private final int rgb;
+    private final Color color;
 }

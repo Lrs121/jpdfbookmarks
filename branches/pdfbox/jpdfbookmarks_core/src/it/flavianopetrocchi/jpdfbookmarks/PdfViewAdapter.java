@@ -219,7 +219,7 @@ public class PdfViewAdapter extends JScrollPane implements IPdfView {
         return numberOfPages;
     }
 
-    public int getCurrentPage() {
+    public int getPageNumber() {
         return currentPage + 1;
     }
 
@@ -327,7 +327,7 @@ public class PdfViewAdapter extends JScrollPane implements IPdfView {
 
     public Bookmark getBookmarkFromView() {
         Bookmark bookmark = new Bookmark();
-        bookmark.setPageNumber(getCurrentPage());
+        bookmark.setPageNumber(getPageNumber());
         bookmark.setType(getFitType().convertToBookmarkType());
         PageDimension mediaBox = currentPageObject.getSize(1f);
         Point pt = viewport.getViewPosition();
