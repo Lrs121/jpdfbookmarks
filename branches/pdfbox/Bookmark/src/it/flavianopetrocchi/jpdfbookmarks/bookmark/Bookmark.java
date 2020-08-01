@@ -980,7 +980,7 @@ public class Bookmark extends DefaultMutableTreeNode implements Serializable {
             BufferedReader br, String indentation, String pageSeparator,
             String attributesSeparator) throws IOException {
 
-        ArrayList<Bookmark> fathers = new ArrayList<Bookmark>(8);
+        ArrayList<Bookmark> fathers = new ArrayList<>(8);
         Bookmark newOutline = new Bookmark();
 
         fathers.add(newOutline);
