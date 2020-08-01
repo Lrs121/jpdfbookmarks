@@ -34,11 +34,16 @@ import javax.swing.ListCellRenderer;
 import javax.swing.border.EmptyBorder;
 
 /**
- * The enum contains a complete list of the color names supported by all major
- * browsers as of 2012. These are related to the old X11 color names (see
- * https://en.wikipedia.org/wiki/X11_color_names) and also to the newer CSS 3
- * color keywords (see https://www.w3.org/TR/2018/REC-css-color-3-20180619/) but
- * are not quite the same as either.
+ * Each instance of this class corresponds to one CSS 3 color keyword. The
+ * instances each contain the color's 24-bit RGB number and its corresponding
+ * Color.
+ *
+ * Color keywords are not unique; the English spelling variants gray (usually
+ * US)/grey (usually UK) are included.
+ *
+ * CSS 3 color keywords are enumerated in CSS Color Module Level 3 available at
+ * https://www.w3.org/TR/2018/REC-css-color-3-20180619/
+ *
  */
 public enum Colors {
 
@@ -68,6 +73,7 @@ public enum Colors {
     DarkCyan(0x008B8B),
     DarkGoldenRod(0xB8860B),
     DarkGray(0xA9A9A9),
+    DarkGrey(0xA9A9A9),
     DarkGreen(0x006400),
     DarkKhaki(0xBDB76B),
     DarkMagenta(0x8B008B),
@@ -79,11 +85,13 @@ public enum Colors {
     DarkSeaGreen(0x8FBC8F),
     DarkSlateBlue(0x483D8B),
     DarkSlateGray(0x2F4F4F),
+    DarkSlateGrey(0x2F4F4F),
     DarkTurquoise(0x00CED1),
     DarkViolet(0x9400D3),
     DeepPink(0xFF1493),
     DeepSkyBlue(0x00BFFF),
     DimGray(0x696969),
+    DimGrey(0x696969),
     DodgerBlue(0x1E90FF),
     FireBrick(0xB22222),
     FloralWhite(0xFFFAF0),
@@ -94,6 +102,7 @@ public enum Colors {
     Gold(0xFFD700),
     GoldenRod(0xDAA520),
     Gray(0x808080),
+    Grey(0x808080),
     Green(0x008000),
     GreenYellow(0xADFF2F),
     HoneyDew(0xF0FFF0),
@@ -110,6 +119,7 @@ public enum Colors {
     LightCoral(0xF08080),
     LightCyan(0xE0FFFF),
     LightGoldenRodYellow(0xFAFAD2),
+    LightGray(0xD3D3D3),
     LightGrey(0xD3D3D3),
     LightGreen(0x90EE90),
     LightPink(0xFFB6C1),
@@ -117,6 +127,7 @@ public enum Colors {
     LightSeaGreen(0x20B2AA),
     LightSkyBlue(0x87CEFA),
     LightSlateGray(0x778899),
+    LightSlateGrey(0x778899),
     LightSteelBlue(0xB0C4DE),
     LightYellow(0xFFFFE0),
     Lime(0x00FF00),
@@ -127,7 +138,7 @@ public enum Colors {
     MediumAquaMarine(0x66CDAA),
     MediumBlue(0x0000CD),
     MediumOrchid(0xBA55D3),
-    MediumPurple(0x9370D8),
+    MediumPurple(0x9370DB),
     MediumSeaGreen(0x3CB371),
     MediumSlateBlue(0x7B68EE),
     MediumSpringGreen(0x00FA9A),
@@ -148,7 +159,7 @@ public enum Colors {
     PaleGoldenRod(0xEEE8AA),
     PaleGreen(0x98FB98),
     PaleTurquoise(0xAFEEEE),
-    PaleVioletRed(0xD87093),
+    PaleVioletRed(0xDB7093),
     PapayaWhip(0xFFEFD5),
     PeachPuff(0xFFDAB9),
     Peru(0xCD853F),
@@ -169,6 +180,7 @@ public enum Colors {
     SkyBlue(0x87CEEB),
     SlateBlue(0x6A5ACD),
     SlateGray(0x708090),
+    SlateGrey(0x708090),
     Snow(0xFFFAFA),
     SpringGreen(0x00FF7F),
     SteelBlue(0x4682B4),
@@ -184,6 +196,9 @@ public enum Colors {
     Yellow(0xFFFF00),
     YellowGreen(0x9ACD32);// </editor-fold>
 
+    private final int rgb;          // The 24-bit RGB representation of the color
+    private final Color color;   // The Java color object which represents the color
+
     Colors(int rgb) {
         this.rgb = rgb;
         this.color = new Color(rgb);
@@ -195,16 +210,15 @@ public enum Colors {
     }
 
     /**
-     * Return a string presentation of the Color passed as parameter as one of
-     * the names defined by the Colors enum or as an exadecimal value in the
-     * format "#RRGGBB".
+     * Return the color keyword associated with a color, or else a #rrggbb
+     * string identifying the color.
      *
      * @param color The color to transform to a string.
-     * @return String presentation of the color.
+     * @return a string containing the CSS 3 text representation of that color
      */
     public static String colorToString(Color color) {
         Colors item = lookUp(color);
-        String presentation = null;
+        String presentation;
         if (item != null) {
             presentation = item.toString();
         } else {
@@ -214,6 +228,13 @@ public enum Colors {
         return presentation;
     }
 
+    /**
+     * Look up a color keyword, return the associated Color.
+     *
+     * @param color a color name
+     * @return the associated Color
+     * @throws NumberFormatException
+     */
     public static Color stringToColor(String color)
             throws NumberFormatException {
         Colors item = null;
@@ -222,7 +243,7 @@ public enum Colors {
         } catch (Exception e) {
         }
 
-        Color c = null;
+        Color c;
         if (item != null) {
             c = item.getColor();
         } else {
@@ -241,12 +262,13 @@ public enum Colors {
     }
 
     /**
-     * Search for a member of the Colors enum that corresponds to the rgb color
-     * value.
+     * Search for an instance of the Colors enum that corresponds to the rgb
+     * color value. In the case of a color with two names like gray/grey, the
+     * first in the enum, the US spelling, (gray, not grey) will be returned,
+     * since it is lexically first. If the color is not found, null is returned.
      *
      * @param rgb Color expressed in RGB format.
-     * @return Member of this enum that has the RGB value asked or null if it is
-     * not found.
+     * @return the Colors instance corresponding to that color, if any.
      */
     public static Colors lookUp(int rgb) {
         Colors searched = null;
@@ -255,7 +277,6 @@ public enum Colors {
                 searched = c;
             }
         }
-
         return searched;
     }
 
@@ -271,12 +292,10 @@ public enum Colors {
     }
 
     /**
-     * Try to search for corresponding enum value to the color passed as string
-     * in a format that Color.decode() method can evaluate.
+     * Search for the color keyword associated with a color number string.
      *
      * @param rgb Value passed to Color.decode(String nm).
-     * @return Member of this enum corresponding to the rgb value if found or
-     * null.
+     * @return Instance corresponding to the rgb value if found or null.
      */
     public static Colors lookUp(String rgb) {
         Colors searched = null;
@@ -292,6 +311,12 @@ public enum Colors {
         return searched;
     }
 
+    /**
+     * Return the color keyword associated with col. If col is not found, return null.
+     * 
+     * @param col
+     * @return
+     */
     public static Colors lookUp(Color col) {
         Colors searched = null;
         for (Colors c : Colors.values()) {
@@ -363,6 +388,4 @@ public enum Colors {
             return this;
         }
     }
-    private final int rgb;
-    private final Color color;
 }
