@@ -332,12 +332,6 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
     }
 
     /**
-     * Almost nothing I want to do can be safely written in the constructor, so it's empty.
-     */
-    public JPdfBookmarksGui() {
-    }
-    
-    /**
      * initialize JPdfBookmarksGui instance. This exists because most of the code in this routine
      * cannot safely be run inside a constructor; there are "this" leaks and subclass issues. Fortunately
      * JPdfBookmarksGui is only instantiated in one place, so it is easy to write:

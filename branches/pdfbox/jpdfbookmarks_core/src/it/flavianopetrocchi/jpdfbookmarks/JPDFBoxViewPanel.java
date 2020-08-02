@@ -57,10 +57,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -154,41 +151,44 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
         } else {
             document = PDDocument.load(file);
         }
-        // TBD - what happens if the document can't be loaded?
+        /**
+         * Code past this point will only be executed If there is a document to
+         * view An exception is thrown if the document cannot be loaded.
+         */
         renderer = new PDFRenderer(document);
-        thumbnails = null;
-//        if (thumbnails == null) {
-//            thumbnails = new ThumbnailsPanel(commonValues, decoder);
-//            addPageChangedListener(thumbnails);
-//        }
+        thumbnails = new ThumbnailsPanel(document);
+        addPageChangedListener(thumbnails);
 
         numberOfPages = document.getNumberOfPages();
         // if there's actually a first page, get it
         page = numberOfPages > 0 ? document.getPage(0) : null;
         updateCurrentPageBoxes();
 
-//        thumbnails.setupThumbnails(numberOfPages, textFont, Res.getString("PAGE"), pdfPageData);
-//        thumbnails.addComponentListener();
-//        Object[] buttons = thumbnails.getButtons();
-//        for (int i = 0; i < buttons.length; i++) {
-//            ((JButton) buttons[i]).addActionListener(new ThumbnailListener(i));
-//        }
+        /**
+         * Fill in the the thumbnails. For complicated reasons this cannot be
+         * done in the ThumbnailsPanel constructor.
+         */
+        thumbnails.setupThumbnails();
+        /**
+         * Attach the ThumbnailListener to each thumbnail button. Again, this
+         * cannot be done in setupThumbnails() where one might reasonably expect
+         * to find the code.
+         */
+        ThumbnailListener tl = new ThumbnailListener();
+        for (ThumbnailButton tb : thumbnails.getThumbnailButtons()) {
+            tb.addActionListener(tl);
+        }
     }
 
     /**
-     * Responds to actions on the thumbnails pane
+     * Go to the page associated with the clicked thumbnail.
      */
     private class ThumbnailListener implements ActionListener {
 
-        private int page = 1;
-
-        public ThumbnailListener(int page) {
-            this.page = page + 1;
-        }
-
         @Override
         public void actionPerformed(ActionEvent e) {
-            goToPage(page);
+            ThumbnailButton tb = (ThumbnailButton) e.getSource();
+            goToPage(tb.getPageNum());
         }
     }
 
@@ -212,10 +212,6 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
         }
         document.close();
         document = null;
-        if (thumbnails != null) {
-            thumbnails.dispose();
-            thumbnails = null;
-        }
         pageIndex = -1;
         setCopiedText(null);
         rendererPanel.repaint();
@@ -583,6 +579,9 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
 
     /**
      * TBD: explain this method
+     *
+     * fdiv is used to clarify the calculation, making it clear that it is done
+     * in floating point.
      */
     private void calcScaleFactor() {
         switch (fitType) {
@@ -936,7 +935,7 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
             if (oldScale != scale || pageIndex != oldPage || pageImage == null) {
                 CursorToolkit.startWaitCursor(JPDFBoxViewPanel.this);
                 try {
-                    // TBD: page scaling, clipping, text selection
+                    // TBD: text selection
                     pageImage = renderer.renderImage(pageIndex, scale);
                     oldScale = scale;
                     oldPage = pageIndex;
