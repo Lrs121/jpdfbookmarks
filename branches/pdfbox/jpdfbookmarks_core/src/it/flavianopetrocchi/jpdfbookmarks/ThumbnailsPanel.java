@@ -1,6 +1,8 @@
 package it.flavianopetrocchi.jpdfbookmarks;
 
 import java.awt.Component;
+import java.awt.Image;
+import static java.awt.Image.SCALE_DEFAULT;
 import java.io.IOException;
 
 import java.awt.image.BufferedImage;
@@ -31,7 +33,7 @@ import org.apache.pdfbox.rendering.PDFRenderer;
  */
 public class ThumbnailsPanel extends JScrollPane implements PageChangedListener {
 
-    static final float THUMBSIZE = 72;
+    static final float THUMBSIZE = 108;
 
     private final PDDocument document;
     private Box thumbnailBox;
@@ -68,22 +70,21 @@ public class ThumbnailsPanel extends JScrollPane implements PageChangedListener 
         this.getViewport().add(thumbnailBox);
         // create page thumbnail buttons and page numbers, TBD: possibly include page labels
         // for each page
-        BufferedImage thumb;
+        Image thumb;
         ImageIcon icon;
         ImageIcon nothumb = new ImageIcon(
                 getClass().getResource("/it/flavianopetrocchi/jpdfbookmarks/gfx/nothumb.png"));
         // For each page
-        for (int pIndex = 0; pIndex < document.getNumberOfPages(); pIndex++) {
-            // maintain the page count, since pages don't store their numbers internally
+        for (int pageIndex = 0; pageIndex < document.getNumberOfPages(); pageIndex++) {
             // Create the thumbnail button and add it to the box
-            ThumbnailButton tb = new ThumbnailButton(pIndex + 1);
+            ThumbnailButton tb = new ThumbnailButton(pageIndex + 1);
             tb.setVerticalTextPosition(AbstractButton.BOTTOM);
             tb.setHorizontalTextPosition(AbstractButton.CENTER);
             // TBD: generate the page thumbnails as the button becomes visible.
             // Currently, this generates page thumbnails for the first 10 pages, if there are that many.
             thumb = null;
-            if (pIndex < 10)
-                thumb = getThumb(pIndex);
+            if (pageIndex < 10)
+                thumb = getThumb(pageIndex);
             if (thumb != null)
                 tb.setIcon(new ImageIcon(thumb));
             else
@@ -114,8 +115,8 @@ public class ThumbnailsPanel extends JScrollPane implements PageChangedListener 
      * @param pIndex - the PDF page index
      * @return
      */
-    private BufferedImage getThumb(int pIndex) {
-        // Get the  stored thumbnail, if any
+    private Image getThumb(int pIndex) {
+        // Get the stored thumbnail, if any.
         BufferedImage thumbnail = null;
         PDPage page = document.getPage(pIndex);
         COSStream strm = page.getCOSObject().getCOSStream(COSName.THUMB);
@@ -125,14 +126,27 @@ public class ThumbnailsPanel extends JScrollPane implements PageChangedListener 
                 thumbnail = PDImageXObject.createThumbnail(strm).getImage();
             } catch (IOException e) {
                 thumbnail = null;
-                // thumbnail is null anyway
             }
         }
         if (thumbnail != null) {
+            // A thumbnail found in the PDF file
+            // Scale the image to fit in THUMBSIZE
+            int w =thumbnail.getWidth();
+            int h = thumbnail.getHeight();
+            if (h > THUMBSIZE && h >= w)
+                thumbnail = (BufferedImage) thumbnail.getScaledInstance(-1, (int) THUMBSIZE, SCALE_DEFAULT);
+            else if (w > THUMBSIZE)
+                thumbnail = (BufferedImage) thumbnail.getScaledInstance((int) THUMBSIZE, -1, SCALE_DEFAULT);
+            // Return the image
             return thumbnail;
         }
-        // Not available; generate it
-        PDRectangle rect = page.getArtBox();
+        // No thumbnail stored, generate a thumbnail.
+        // 
+        PDRectangle rect = page.getCropBox();
+        if (rect == null)
+            rect = page.getMediaBox();
+        if (rect == null)
+            return null;
         float hscale = THUMBSIZE / rect.getWidth();
         float wscale = THUMBSIZE / rect.getHeight();
         float scale = min(hscale, wscale);

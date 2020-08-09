@@ -51,17 +51,3 @@ public class ThumbnailButton extends JButton {
 //      break;
 // if (vp == null)
 //    error…
-
-// This fragment gets a thumbnail stored in a PDF file, if any.
-//            // Get the thumbnail, if any
-//            BufferedImage thumbnail = null;
-//            COSStream strm = page.getCOSObject().getCOSStream(COSName.THUMB);
-//            if (strm != null) {
-//                try {
-//                    thumbnail = PDImageXObject.createThumbnail(strm).getImage();
-//                } catch (IOException e) {
-//                    thumbnail = null;
-//                }
-//            }
-//            ImageIcon icon;
-//            icon = (thumbnail != null) ? new ImageIcon(thumbnail) : nothumb;
