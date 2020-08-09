@@ -373,8 +373,8 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
         rendererPanel.repaint();
 
         // PageChangedEvent uses the pageIndex + 1 as the user-visible page number
-        firePageChangedEvent(new PageChangedEvent(this, pageIndex + 1, hasNext,
-                hasPrevious));
+        firePageChangedEvent(new PageChangedEvent(
+                this, pageIndex + 1, hasNext, hasPrevious));
     }
 
     /**

@@ -45,6 +45,10 @@ public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
 
     private final PDDocument document;
     private Box thumbnailBox;
+
+    public Box getThumbnailBox() {
+        return thumbnailBox;
+    }
     private final PDFRenderer thumbnailRenderer;
 
     /**
@@ -61,11 +65,33 @@ public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
         // setupThumbnails.
     }
 
-    // TBD: make this work
+    /**
+     * Responds to a change in the display PDF page, making the appropriate
+     * thumbnail visible in the thumbnails windows. It will be confused by
+     * changes in the sizes of displayed thumbnails, which means the need to fix
+     * those sizes is pressing.
+     *
+     * @param e the event fired when the page is changed in the
+     * JPDFBoxViewPanel.
+     */
     @Override
-    public void pageChanged(PageChangedEvent evt) {
-        // resetHighlightedThumbnail(evt.getCurrentPage() - 1);
-        // generateOtherVisibleThumbnails(evt.getCurrentPage());
+    public void pageChanged(PageChangedEvent e) {
+        ThumbnailsPane tp = (ThumbnailsPane) ((JPDFBoxViewPanel) e.getSource()).getThumbnails();
+        ThumbnailButton tb = null;
+        // Find the ThumbnailButton that corresponds to the page that has just been selected
+        for (Component co : tp.getThumbnailBox().getComponents()) {
+            if (co instanceof ThumbnailButton) {
+                tb = (ThumbnailButton) co;
+                if (tb.getPageNum() == e.getCurrentPage()) {
+                    break;
+                }
+            }
+        }
+        // If we've actually found the button (which should be always, but just in case) make it visible.
+        if (tb != null) {
+            Rectangle buttonRect = tb.getBounds();
+            tp.getViewport().scrollRectToVisible(buttonRect);
+        }
     }
 
     /**
