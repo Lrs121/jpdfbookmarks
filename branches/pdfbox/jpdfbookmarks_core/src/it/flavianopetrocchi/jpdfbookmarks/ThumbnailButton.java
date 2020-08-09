@@ -16,38 +16,51 @@
  */
 package it.flavianopetrocchi.jpdfbookmarks;
 
+import javax.swing.Icon;
 import javax.swing.JButton;
 
-
 /**
- * A button which carries the thumbnail of a PDF document page. The only thing this adds to the basic
- * JButton class is a page number.
- * 
+ * A button which carries the thumbnail of a PDF document page. It contains a
+ * page number and an indicator that the button's icon reflects an actual PDF
+ * page.
+ *
+ * TBD: display page label as well as page number
+ *
  * @author rfritz
  */
 public class ThumbnailButton extends JButton {
 
-    int pageNum;
+    private final int pageNum;
+    /**
+     * Used to signal if the button has a thumbnail generated from the actual
+     * PDF file. This allows thumbnails to be generated as pages become visible,
+     * rather than all at once when a file is opened.
+     */
+    private boolean hasRealThumb;
 
-    public ThumbnailButton(int pnum) {
-        super("" + pnum);
-        pageNum = pnum;
+    /**
+     * A button labeled with a page number from the PDF file, using a thumbnail
+     * of the page as an icon.
+     *
+     * @param pgNum the page number
+     */
+    public ThumbnailButton(int pgNum) {
+        super("" + pgNum);
+        this.hasRealThumb = false;
+        pageNum = pgNum;
     }
-    
+
     public int getPageNum() {
         return pageNum;
     }
-}
 
-// This fragment gets the viewport the button belongs to, then gets its size and outputs it.
-// The size is the actual size of the viewport, not the virtual size of the box it contains.
-// The parent of the button is the Box in which the buttons are placed, then the parent
-// of that is the JViewport belonging to the JScrollPane.
-//        Container vp = this.getParent().getParent();
-//        System.out.println("Width = " + vp.getWidth() + "  " + "Height = " + vp.getHeight());
-// it would probably be sturdier code if there was an actual test for a JViewport, perhaps like
-// for (Container vp = this.getParent(); vp != null; vp = this.getParent())
-//    if (vp instanceof JViewport)
-//      break;
-// if (vp == null)
-//    error…
+    public void setThumb(Icon icon, boolean realThumb) {
+        this.setIcon(icon);
+        this.hasRealThumb = realThumb;
+    }
+
+    public boolean hasRealThumb() {
+        return hasRealThumb;
+    }
+
+}

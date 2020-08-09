@@ -130,7 +130,7 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
     private Boolean textSelectionActive = false;
     private String copiedText;
     private Boolean connectToClipboard = false;
-    private ThumbnailsPanel thumbnails;
+    private ThumbnailsPane thumbnails;
     private JScrollBar vbar;// </editor-fold>
 
     @Override
@@ -156,7 +156,7 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
          * view An exception is thrown if the document cannot be loaded.
          */
         renderer = new PDFRenderer(document);
-        thumbnails = new ThumbnailsPanel(document);
+        thumbnails = new ThumbnailsPane(document);
         addPageChangedListener(thumbnails);
 
         numberOfPages = document.getNumberOfPages();
