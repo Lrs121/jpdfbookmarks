@@ -71,11 +71,7 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.rendering.PDFRenderer;
 
 /**
- * PDFBox-based PDF page viewer.
- *
- * PDF, per the 2008 PDF-1.7 standard, counts pages by their distance from the
- * first page; the standard refers to "page index" and "page label" and
- * sometimes page number. The page index starts at 0
+ * PDFBox-based PDF page viewer
  *
  * @author fla
  * @author rmfritz
@@ -109,6 +105,13 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
     private final int bottom = -1;
     private final int right = -1;
     private float scale = 1.0f;
+    /**
+     * The page index of the currently displayed PDF page.
+     * 
+     * PDF, per the 2008 PDF-1.7 standard, counts pages by their distance from
+     * the first page; the standard refers to "page index" and "page label" and
+     * sometimes page number. The page index starts at 0.
+     */
     private int pageIndex;
     private int oldPage = -2;
     private PdfRenderPanel rendererPanel;
@@ -153,7 +156,7 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
         }
         /**
          * Code past this point will only be executed If there is a document to
-         * view An exception is thrown if the document cannot be loaded.
+         * view. An exception is thrown if the document cannot be loaded.
          */
         renderer = new PDFRenderer(document);
         thumbnails = new ThumbnailsPane(document);
@@ -165,14 +168,11 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
         updateCurrentPageBoxes();
 
         /**
-         * Fill in the the thumbnails. For complicated reasons this cannot be
-         * done in the ThumbnailsPanel constructor.
+         * Fill in the the thumbnails.
          */
         thumbnails.setupThumbnails();
         /**
-         * Attach the ThumbnailListener to each thumbnail button. Again, this
-         * cannot be done in setupThumbnails() where one might reasonably expect
-         * to find the code.
+         * Attach the ThumbnailListener to each thumbnail button.
          */
         ThumbnailListener tl = new ThumbnailListener();
         for (ThumbnailButton tb : thumbnails.getThumbnailButtons()) {
@@ -337,7 +337,7 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
     /**
      * Display page pageNum. Page numbers begin at 1.
      *
-     * TBD: provide a mechanism to go to a page label (i, ix, 1, 222, A-1, A-33,
+     * ENH: provide a mechanism to go to a page label (i, ix, 1, 222, A-1, A-33,
      * etc.)
      *
      * @param pageNum
@@ -905,7 +905,7 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
     }
 
     /**
-     * scrollable panel where PDF pages are viewed.
+     * Scrollable panel where PDF pages are viewed.
      */
     private class PdfRenderPanel extends JPanel implements Scrollable {
 

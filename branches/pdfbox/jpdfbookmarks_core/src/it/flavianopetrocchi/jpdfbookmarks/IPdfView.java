@@ -49,8 +49,8 @@ public interface IPdfView {
         public void goToNextPage();
         public void goToLastPage();
 
-        // TBD: public void goToBookmark(Bookmark bookmark);
-        // TBD: public void goToPageLabel(String pageLabel);
+        // ENH: public void goToBookmark(Bookmark bookmark);
+        // ENH: public void goToPageLabel(String pageLabel);
 
         // Page fitting methods
         public void setFitNative();

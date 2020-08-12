@@ -24,12 +24,13 @@ import javax.swing.JButton;
  * page number and an indicator that the button's icon reflects an actual PDF
  * page.
  *
- * TBD: display page label as well as page number
+ * ENH: display page label as well as page number
  *
- * @author rfritz
+ * @author rmfritz
  */
 public class ThumbnailButton extends JButton {
 
+    /** The number of the page associated with this thumbnail. */
     private final int pageNum;
     /**
      * Used to signal if the button has a thumbnail generated from the actual
