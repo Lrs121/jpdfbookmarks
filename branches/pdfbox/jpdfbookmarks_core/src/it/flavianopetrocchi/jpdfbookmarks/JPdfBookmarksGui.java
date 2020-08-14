@@ -158,7 +158,7 @@ import javax.swing.undo.UndoableEditSupport;// </editor-fold>
 
 /**
  * The main frame of the JPdfBookmarks GUI.
- * 
+ *
  * @author fla
  */
 class JPdfBookmarksGui extends JFrame implements FileOperationListener,
@@ -167,8 +167,8 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         RenderingStartListener, TextCopiedListener, TreeNodeMovedListener {
 
     // <editor-fold defaultstate="collapsed" desc="Members">
-    public static final boolean MACOS = 
-            System.getProperty("os.name").contains("OS X");
+    public static final boolean MACOS
+            = System.getProperty("os.name").contains("OS X");
     private static final Clipboard localClipboard;
 //    private Clipboard clipboard;
     private DropTarget dropTarget;
@@ -332,11 +332,11 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
     }
 
     /**
-     * initialize JPdfBookmarksGui instance. This exists because most of the code in this routine
-     * cannot safely be run inside a constructor; there are "this" leaks and subclass issues. Fortunately
-     * JPdfBookmarksGui is only instantiated in one place, so it is easy to write:
-     *    var viewer = new JPdfBookmarksGui;
-     *    viewer.initGui();
+     * initialize JPdfBookmarksGui instance. This exists because most of the
+     * code in this routine cannot safely be run inside a constructor; there are
+     * "this" leaks and subclass issues. Fortunately JPdfBookmarksGui is only
+     * instantiated in one place, so it is easy to write: var viewer = new
+     * JPdfBookmarksGui; viewer.initGui();
      */
     public void initGui() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -347,7 +347,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
 
         undoManager = new ExtendedUndoManager();
         undoSupport = new UndoableEditSupport(this);
-        
+
         setTitle(title);
         setIconImage(Res.getIcon(getClass(), "gfx/jpdfbookmarks.png").getImage());
         loadWindowState();
@@ -357,7 +357,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         viewPanel.addTextCopiedListener(this);
 
         initComponents();
- 
+
         fileOperator.addFileOperationListener(this);
         viewPanel.addPageChangedListener(this);
         viewPanel.addViewChangedListener(this);
@@ -389,7 +389,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         addWindowListener(wndCloser);
         addWindowStateListener(wndCloser);
     }
-    
+
     public final void flavorsChanged() {
 
         DataFlavor[] flavorsInClipboard = localClipboard.getAvailableDataFlavors();
@@ -725,8 +725,6 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
     private JPanel createThumbnailsPanel() {
         return new JPanel();
     }
-    
-    
 
     abstract class ActionBuilder extends AbstractAction {
 
@@ -755,7 +753,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
             setEnabled(enabled);
         }
     }
-    
+
     private void openLinkedPdf() {
         File file = pdfFileChooser();
         if (file != null && file.isFile()) {
@@ -868,7 +866,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
             protected void done() {
                 Bookmark root;
                 try {
-                        root = get();
+                    root = get();
                     bookmarksTree.setRootVisible(false);
                     bookmarksTree.setEditable(true);
                     if (root != null) {
@@ -1714,9 +1712,9 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
      *
      * Provides conversion of Windows-style keyboard accelerators macOS-style
      * keyboard shortcuts.
-     * 
-     * This method is applied to menu item accelerator strings which have Mac 
-     * alternatives.  It switches out "ctrl" or "control" for "meta".
+     *
+     * This method is applied to menu item accelerator strings which have Mac
+     * alternatives. It switches out "ctrl" or "control" for "meta".
      *
      * Did I hear someone scream "Hack!"?
      *
@@ -1750,7 +1748,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
      * compromise. Most of the existing accelerators were left standing, but on
      * macOS, the control key was swapped for the Java meta key, which
      * represents the macOS command key. Three exceptions: "Save As" has been
-     * switched to control/command shift S on all platforms, and "Dump" and 
+     * switched to control/command shift S on all platforms, and "Dump" and
      * "Load" have been switched to use command on macOS, for reasons of coder
      * intuition.
      *
@@ -1761,9 +1759,9 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
      *
      * It might also be best to convert this to a table-driven method, but that
      * would require editing of over 50 menu items.
-     * 
+     *
      */
-        private void createActions() {
+    private void createActions() {
 
 //        cutAction = TransferHandler.getCutAction();
 //        copyAction = TransferHandler.getCopyAction();
@@ -1787,7 +1785,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
             }
         };
 
-        copyAction = new ActionBuilder("ACTION_COPY", "ACTION_COPY_DESCR", 
+        copyAction = new ActionBuilder("ACTION_COPY", "ACTION_COPY_DESCR",
                 platAcc("ctrl C"), "edit-copy.png", false) {
 
             @Override
@@ -1797,8 +1795,8 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         };
 
         copyBookmarkFromViewAction = new ActionBuilder(
-                "ACTION_COPY_BOOKMARK_FROM_VIEW", 
-                "ACTION_COPY_BOOKMARK_FROM_VIEW_DESCR", "ctrl shift C", 
+                "ACTION_COPY_BOOKMARK_FROM_VIEW",
+                "ACTION_COPY_BOOKMARK_FROM_VIEW_DESCR", "ctrl shift C",
                 "copy-linked.png", false) {
 
             @Override
@@ -1807,7 +1805,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
             }
         };
 
-        pasteAction = new ActionBuilder("ACTION_PASTE", "ACTION_PASTE_DESCR", 
+        pasteAction = new ActionBuilder("ACTION_PASTE", "ACTION_PASTE_DESCR",
                 platAcc("ctrl V"), "edit-paste.png", false) {
 
             @Override
@@ -1943,7 +1941,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         };
 
         addChildAction = new ActionBuilder("ACTION_ADD_CHILD",
-                "ACTION_ADD_CHILD_DESCR", "ctrl alt F", "add-child.png", 
+                "ACTION_ADD_CHILD_DESCR", "ctrl alt F", "add-child.png",
                 false) {
 
             @Override
@@ -1953,7 +1951,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         };
 
         addWebLinkAction = new ActionBuilder("ACTION_ADD_WEB_LINK",
-                "ACTION_ADD_WEB_LINK_DESCR", "ctrl alt W", "bookmark-web.png", 
+                "ACTION_ADD_WEB_LINK_DESCR", "ctrl alt W", "bookmark-web.png",
                 false) {
 
             @Override
@@ -1963,7 +1961,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         };
 
         addLaunchLinkAction = new ActionBuilder("ACTION_ADD_LAUNCH_LINK",
-                "ACTION_ADD_LAUNCH_LINK_DESCR", "ctrl alt H", 
+                "ACTION_ADD_LAUNCH_LINK_DESCR", "ctrl alt H",
                 "bookmark-launch.png", false) {
 
             @Override
@@ -1981,8 +1979,8 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
             }
         };
 
-        setBoldAction = new ActionBuilder("ACTION_SET_BOLD", 
-                "ACTION_SET_BOLD_DESCR", 
+        setBoldAction = new ActionBuilder("ACTION_SET_BOLD",
+                "ACTION_SET_BOLD_DESCR",
                 "ctrl G", "format-text-bold.png", false) {
 
             @Override
@@ -1992,7 +1990,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
             }
         };
 
-        setItalicAction = new ActionBuilder("ACTION_SET_ITALIC", 
+        setItalicAction = new ActionBuilder("ACTION_SET_ITALIC",
                 "ACTION_SET_ITALIC_DESCR",
                 "ctrl I", "format-text-italic.png", false) {
 
@@ -2041,8 +2039,8 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
             }
         };
 
-        selectText = new ActionBuilder("ACTION_SELECT_TEXT", 
-                "ACTION_SELECT_TEXT_DESCR", 
+        selectText = new ActionBuilder("ACTION_SELECT_TEXT",
+                "ACTION_SELECT_TEXT_DESCR",
                 "ctrl alt T", "select-text.png", false) {
 
             @Override
@@ -2058,7 +2056,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         };
 
         connectToClipboard = new ActionBuilder("ACTION_CONNECT_CLIPBOARD",
-                "ACTION_CONNECT_CLIPBOARD_DESCR", 
+                "ACTION_CONNECT_CLIPBOARD_DESCR",
                 "ctrl alt C", "system-clip.png", false) {
 
             @Override
@@ -2075,7 +2073,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
 
         // <editor-fold defaultstate="collapsed" desc="Navigation Actions">
         goNextPageAction = new ActionBuilder("ACTION_GO_NEXT",
-                "ACTION_GO_NEXT_DESCR", 
+                "ACTION_GO_NEXT_DESCR",
                 "ctrl alt RIGHT", "go-next.png", false) {
 
             @Override
@@ -2085,7 +2083,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         };
 
         goFirstPageAction = new ActionBuilder("ACTION_GO_FIRST",
-                "ACTION_GO_FIRST_DESCR", 
+                "ACTION_GO_FIRST_DESCR",
                 "ctrl alt HOME", "go-first.png", false) {
 
             @Override
@@ -2104,7 +2102,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         };
 
         goPreviousPageAction = new ActionBuilder("ACTION_GO_PREV",
-                "ACTION_GO_PREV_DESCR", 
+                "ACTION_GO_PREV_DESCR",
                 "ctrl alt LEFT", "go-previous.png", false) {
 
             @Override
@@ -2276,7 +2274,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                ActionsDialog d = new ActionsDialog(JPdfBookmarksGui.this, 
+                ActionsDialog d = new ActionsDialog(JPdfBookmarksGui.this,
                         true, getSelectedBookmark());
                 d.setLocationRelativeTo(JPdfBookmarksGui.this);
                 d.setVisible(true);
@@ -2313,7 +2311,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         };
 
         goToAuthorBlog = new ActionBuilder("ACTION_GO_TO_BLOG",
-                "ACTION_GO_TO_BLOG_DESCR", 
+                "ACTION_GO_TO_BLOG_DESCR",
                 null, "internet-web-browser.png", true) {
 
             @Override
@@ -2743,7 +2741,7 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
         item.setMnemonic(Res.mnemonicFromRes("MENU_READ_MANUAL_MNEMONIC"));
         item = menuHelp.add(donateToProject);
         item.setMnemonic(Res.mnemonicFromRes("MENU_DONATE_MNEMONIC"));
-        
+
         if (!MACOS) {
             // On macOS, the about box falls under the app menu, not the help menu
             menuHelp.addSeparator();

@@ -107,7 +107,7 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
     private float scale = 1.0f;
     /**
      * The page index of the currently displayed PDF page.
-     * 
+     *
      * PDF, per the 2008 PDF-1.7 standard, counts pages by their distance from
      * the first page; the standard refers to "page index" and "page label" and
      * sometimes page number. The page index starts at 0.
@@ -212,6 +212,7 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
         }
         document.close();
         document = null;
+        thumbnails = null;
         pageIndex = -1;
         setCopiedText(null);
         rendererPanel.repaint();
@@ -511,26 +512,21 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
 
     public void setFit(FitType fitType) {
         this.fitType = fitType;
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-
-                if (JPDFBoxViewPanel.this.fitType == FitType.FitRect) {
+        SwingUtilities.invokeLater(() -> {
+            if (JPDFBoxViewPanel.this.fitType == FitType.FitRect) {
 //                    viewport.setCursor(Cursor.getPredefinedCursor(
 //                            Cursor.CROSSHAIR_CURSOR));
-                    if (!textSelectionActive) {
-                        viewport.setCursor(rectRedCur);
-                    }
-                } else {
-                    if (!textSelectionActive) {
-                        viewport.setCursor(Cursor.getDefaultCursor());
-                    }
+                if (!textSelectionActive) {
+                    viewport.setCursor(rectRedCur);
                 }
-                calcScaleFactor();
-                adjustPreferredSize();
-                adjustViewportPosition();
+            } else {
+                if (!textSelectionActive) {
+                    viewport.setCursor(Cursor.getDefaultCursor());
+                }
             }
+            calcScaleFactor();
+            adjustPreferredSize();
+            adjustViewportPosition();
         });
         rendererPanel.repaint();
     }

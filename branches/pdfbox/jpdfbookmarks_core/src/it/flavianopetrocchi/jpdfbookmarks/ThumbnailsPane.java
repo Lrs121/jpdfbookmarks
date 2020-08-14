@@ -2,12 +2,12 @@ package it.flavianopetrocchi.jpdfbookmarks;
 
 import static java.lang.Math.min;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import static java.awt.Image.SCALE_DEFAULT;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
@@ -59,7 +59,7 @@ public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
     /**
      * A list of thumbnail buttons, one per page.
      */
-    private final ArrayList<ThumbnailButton> thumbnailButtons;
+    private final ThumbnailButton[] thumbnailButtons;
 
     /**
      * This constructor sets up the document, renderer, thumbnail button array,
@@ -73,12 +73,11 @@ public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
         document = doc;
         thumbnailRenderer = new PDFRenderer(doc);
         thumbnailBox = Box.createVerticalBox();
-        thumbnailButtons = new ArrayList<>(document.getNumberOfPages());
+        thumbnailButtons = new ThumbnailButton[document.getNumberOfPages()];
     }
 
     /**
      * Create the Box for thumbnail buttons and populate it.
-     *
      */
     public void setupThumbnails() {
         // Set up scrolling speed for the thumbnail pane
@@ -90,8 +89,8 @@ public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
 
         /**
          * Create one thumbnail button for each page, recording a reference to
-         * each button in the thumbnailButtons ArrayList. The initial contents
-         * of each button is always the "no thumbnail" icon.
+         * each button in the thumbnailButtons array. The initial contents of
+         * each button is always the "no thumbnail" icon.
          *
          * ENH: possibly include page labels as button labels.
          */
@@ -103,11 +102,11 @@ public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
         for (int pageIndex = 0; pageIndex < document.getNumberOfPages(); pageIndex++) {
             // Create the thumbnail button,  add it to the box and the list of thumbnail buttons.
             ThumbnailButton tb = new ThumbnailButton(pageIndex + 1);
+            thumbnailButtons[pageIndex] = tb;
             tb.setVerticalTextPosition(AbstractButton.BOTTOM);
             tb.setHorizontalTextPosition(AbstractButton.CENTER);
             tb.setThumb(nothumb, false);
             thumbnailBox.add(tb);
-            thumbnailButtons.add(tb);
         }
     }
 
@@ -125,7 +124,7 @@ public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
      *
      * @return ArrayList
      */
-    public ArrayList<ThumbnailButton> getThumbnailButtons() {
+    public ThumbnailButton[] getThumbnailButtons() {
         return thumbnailButtons;
     }
 
@@ -140,7 +139,7 @@ public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
      * which changes the position of the thumbnails in the pane. For now, the
      * solution is to always limit thumbnail buttons to a THUMBSIZE by THUMBSIZE
      * square.
-     * 
+     *
      * ENH: perhaps this ought to run in a worker thread.
      *
      * @param pIndex - the PDF page index
@@ -286,26 +285,23 @@ public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
      * Responds to a change in the displayed PDF page, making the appropriate
      * thumbnail visible in the thumbnails windows.
      *
+     * ENH: make this put the thumbnail reliably at the top of the thumbnail
+     * pane.
+     *
      * @param e the event fired when the page is changed in the
      * JPDFBoxViewPanel.
      */
     @Override
     public void pageChanged(PageChangedEvent e) {
         ThumbnailsPane tp = (ThumbnailsPane) ((JPDFBoxViewPanel) e.getSource()).getThumbnails();
-        ThumbnailButton tb = null;
         // Find the ThumbnailButton that corresponds to the page that has just been selected
-        for (ThumbnailButton tbi : tp.getThumbnailButtons()) {
-            if (tbi.getPageNum() == e.getCurrentPage()) {
-                tb = tbi;
-                break;
-            }
-        }
-        
-        // If we've actually found the button (which should be always, but just in case) make it visible.
-        if (tb != null) {
-            Rectangle buttonRect = tb.getBounds();
-            tp.getViewport().scrollRectToVisible(buttonRect);
-        }
+        ThumbnailButton tb = thumbnailButtons[e.getCurrentPage() - 1];
+        Point boxloc = tp.getViewport().getView().getLocation();
+        Rectangle buttonRect = tb.getBounds();
+        // The coordinates used in scrollRectToVisible turn out to be relative to the Box location,
+        // so the button rectangle must be adjusted by the location of the box.
+        buttonRect.y += boxloc.y;
+        tp.getViewport().scrollRectToVisible(buttonRect);
     }
 
     /**
@@ -377,7 +373,7 @@ public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
                     continue;
                 }
 
-                 // if the button already has a real thumbnail, skip it.
+                // if the button already has a real thumbnail, skip it.
                 if (tb.hasRealThumb()) {
                     continue;
                 }
