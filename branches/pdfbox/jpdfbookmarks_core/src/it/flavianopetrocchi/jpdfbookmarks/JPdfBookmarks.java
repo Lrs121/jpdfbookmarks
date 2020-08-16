@@ -34,12 +34,10 @@ import java.awt.desktop.PreferencesHandler;
 import java.awt.desktop.QuitEvent;
 import java.awt.desktop.QuitHandler;
 import java.awt.desktop.QuitResponse;
-import java.awt.desktop.QuitStrategy;
 import static java.awt.desktop.QuitStrategy.CLOSE_ALL_WINDOWS;
 import java.io.BufferedReader;
 import java.io.Console;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -51,9 +49,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Properties;
-import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -548,6 +544,8 @@ class JPdfBookmarks {
     /**
      * Sets the mode by the command line arguments and initializes files to
      * process if passed as arguments.
+     * 
+     * ENH: replace PosixParser with DefaultParser
      *
      * @param args Arguments to process
      */
@@ -671,6 +669,13 @@ class JPdfBookmarks {
         return answer;
     }
 
+    /**
+     * 
+     * 
+     * ENH: replace OptionBuilder with Option.Builder
+     * 
+     * @return 
+     */
     @SuppressWarnings("static-access")
     private Options createOptions() {
         Options appOptions = new Options();
