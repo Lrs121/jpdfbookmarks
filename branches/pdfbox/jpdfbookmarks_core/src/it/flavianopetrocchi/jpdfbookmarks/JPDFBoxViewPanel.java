@@ -24,7 +24,6 @@ package it.flavianopetrocchi.jpdfbookmarks;
 import it.flavianopetrocchi.jpdfbookmarks.bookmark.Bookmark;
 
 // Utility Java classes
-import java.lang.Float;
 import static java.lang.Math.*;
 import java.io.File;
 import java.io.IOException;
@@ -69,14 +68,17 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.rendering.PDFRenderer;
+import org.apache.pdfbox.text.PDFTextStripperByArea;
 
 /**
- * PDFBox-based PDF page viewer
+ * PDFBox-based PDF page viewer.
+ *
+ * Class is final to avoid the risk of calling overriden methods in constructor.
  *
  * @author fla
  * @author rmfritz
  */
-public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
+public final class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
 
     // <editor-fold defaultstate="collapsed" desc="Members">
     private static final int MIN_RECT_WIDTH = 100;
@@ -123,9 +125,11 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
     private float oldScale;
     volatile boolean painting = false;
 
-    //These may be in pixels; I am arbitrarily assuming 72 ppi
+    /** PDF file crop box positions */
     private int cropBoxX, cropBoxY;
+    /** PDF file crop box sizes */
     private int cropBoxWidth, cropBoxHeight;
+    /** PDF file media box size */
     private int mediaBoxWidth, mediaBoxHeight;
 
     // 
@@ -135,6 +139,41 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
     private Boolean connectToClipboard = false;
     private ThumbnailsPane thumbnails;
     private JScrollBar vbar;// </editor-fold>
+
+    /**
+     * Create a JPDFBoxViewPanel with fitType.
+     *
+     * Just calls the main constructor.
+     *
+     * ENH: doesn't seem to be called anywhere - is this intended for a future
+     * enhancement?
+     *
+     * @param fitType
+     */
+    public JPDFBoxViewPanel(FitType fitType) {
+        this();
+        this.fitType = fitType;
+    }
+
+    /**
+     * Set up the JPDFBoxViewPanel.
+     */
+    public JPDFBoxViewPanel() {
+        vbar = getVerticalScrollBar();
+        rendererPanel = new PdfRenderPanel();
+        viewport.setBackground(Color.gray);
+        setViewportView(rendererPanel);
+        rendererPanel.addKeyListener(new PdfViewKeyListener());
+        addMouseWheelListener(new PdfViewMouseWheelListener());
+        addComponentListener(new ResizeListener());
+
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Point hotSpot = new Point(8, 7);
+        Image image = Res.getIcon(getClass(), "gfx32/rect-red.png").getImage();
+        rectRedCur = toolkit.createCustomCursor(image, hotSpot, "rect-red");
+        image = Res.getIcon(getClass(), "gfx32/rect-blue.png").getImage();
+        rectBlueCur = toolkit.createCustomCursor(image, hotSpot, "rect-blue");
+    }
 
     @Override
     public void open(File file) throws Exception {
@@ -216,24 +255,6 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
         pageIndex = -1;
         setCopiedText(null);
         rendererPanel.repaint();
-    }
-
-    public JPDFBoxViewPanel() {
-        vbar = getVerticalScrollBar();
-        rendererPanel = new PdfRenderPanel();
-        viewport.setBackground(Color.gray);
-        setViewportView(rendererPanel);
-        rendererPanel.addKeyListener(new PdfViewKeyListener());
-        addMouseWheelListener(new PdfViewMouseWheelListener());
-        addComponentListener(new ResizeListener());
-
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-        Point hotSpot = new Point(8, 7);
-        Image image = Res.getIcon(getClass(), "gfx32/rect-red.png").getImage();
-        rectRedCur = toolkit.createCustomCursor(image, hotSpot, "rect-red");
-        image = Res.getIcon(getClass(), "gfx32/rect-blue.png").getImage();
-        rectBlueCur = toolkit.createCustomCursor(image, hotSpot, "rect-blue");
-
     }
 
     class PdfViewMouseWheelListener implements MouseWheelListener {
@@ -318,11 +339,6 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
         @Override
         public void keyReleased(KeyEvent e) {
         }
-    }
-
-    public JPDFBoxViewPanel(FitType fitType) {
-        this();
-        this.fitType = fitType;
     }
 
     @Override
@@ -862,11 +878,38 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
         }
     }
 
+    /**
+     * Extracts text from part of a PDF document.
+     * 
+     * There's details, but I don't yet understand them. TBD: fill them in.
+     * 
+     * @param rectInCrop
+     * @return extracted text
+     */
+  
     @Override
     public String extractText(Rectangle rectInCrop) {
-        String text = null;
+        String text;
+
+        try {
+            Rectangle extRect = new Rectangle(
+                    rectInCrop.x + cropBoxX,
+                    mediaBoxHeight - cropBoxY - rectInCrop.y,
+                    rectInCrop.width,
+                    rectInCrop.height);
+            PDFTextStripperByArea stripper = new PDFTextStripperByArea();
+            stripper.addRegion("Selection", rectInCrop);
+            PDPage pg = document.getPage(pageIndex);
+            stripper.extractRegions(pg);
+            text = stripper.getTextForRegion("Selection");
+        } catch (IOException ex) {
+            text = null;
+        }
+
+        return text;
+    }
+
 //        try {
-//            // TBD: extract text from a selection rectangle goes here
 //            int x1 = rectInCrop.x + cropBoxX;
 //            int x2 = rectInCrop.x + rectInCrop.width + cropBoxX;
 //            int y1 = mediaBoxHeight - cropBoxY - rectInCrop.y;
@@ -881,13 +924,34 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
 //            }
 //        } catch (Exception ex) {
 //        }
+    
+    /**
+     * Extracts text from part of a PDF document.
+     * 
+     * There's details, but I don't yet understand them. TBD: fill them in.
+     * 
+     * @param tlx
+     * @param tly
+     * @param brx
+     * @param bry
+     * @return extracted text
+     */
+    public String extractTextInRect(int tlx, int tly, int brx, int bry) {
+        String text;
 
+        try {
+            Rectangle extRect = new Rectangle(tlx, tly, tlx - brx, tly - bry);
+            PDFTextStripperByArea stripper = new PDFTextStripperByArea();
+            stripper.addRegion("Rect", extRect);
+            PDPage pg = document.getPage(pageIndex);
+            stripper.extractRegions(pg);
+            text = stripper.getTextForRegion("Rect");
+
+        } catch (IOException ex) {
+            text = null;
+        }
         return text;
     }
-
-    public String extractTextInRect(int tlx, int tly, int brx, int bry) {
-        String text = null;
-//        // TBD: extract text from a selection rectangle goes here
 //        try {
 //            int page = pageIndex + 1;
 //            decoder.decodePage(page);
@@ -897,13 +961,10 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
 //        } catch (Exception ex) {
 //        }
 
-        return text;
-    }
-
     /**
      * Scrollable panel where PDF pages are viewed.
      */
-    private class PdfRenderPanel extends JPanel implements Scrollable {
+    final private class PdfRenderPanel extends JPanel implements Scrollable {
 
         public PdfRenderPanel() {
             setFocusable(true);
@@ -931,7 +992,6 @@ public class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
             if (oldScale != scale || pageIndex != oldPage || pageImage == null) {
                 CursorToolkit.startWaitCursor(JPDFBoxViewPanel.this);
                 try {
-                    // TBD: text selection
                     pageImage = renderer.renderImage(pageIndex, scale);
                     oldScale = scale;
                     oldPage = pageIndex;

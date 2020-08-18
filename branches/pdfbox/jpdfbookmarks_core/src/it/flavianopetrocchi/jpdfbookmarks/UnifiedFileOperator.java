@@ -53,7 +53,7 @@ public final class UnifiedFileOperator {
     private File tmpForViewPanel;
     private boolean showOnOpen = false;
     private Bookmark root;
-    private Prefs userPrefs = new Prefs();
+    private final Prefs userPrefs = new Prefs();
     private byte[] ownerPassword;
     private byte[] userPassword;
     private boolean readonly = false;

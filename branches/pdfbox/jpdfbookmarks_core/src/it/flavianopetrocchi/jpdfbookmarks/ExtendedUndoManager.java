@@ -23,7 +23,7 @@ package it.flavianopetrocchi.jpdfbookmarks;
 
 import javax.swing.event.*;
 import javax.swing.undo.*;
-import java.util.Vector;        // Considered obsolete. TBD: replace.
+import java.util.Vector;        // Considered obsolete. ENH: replace.
 
 /**
  * Extends the undo manager class to do…something, I'm not sure what, yet. – RMFritz
