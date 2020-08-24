@@ -141,21 +141,6 @@ public final class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
     private JScrollBar vbar;// </editor-fold>
 
     /**
-     * Create a JPDFBoxViewPanel with fitType.
-     *
-     * Just calls the main constructor.
-     *
-     * ENH: doesn't seem to be called anywhere - is this intended for a future
-     * enhancement?
-     *
-     * @param fitType
-     */
-    public JPDFBoxViewPanel(FitType fitType) {
-        this();
-        this.fitType = fitType;
-    }
-
-    /**
      * Set up the JPDFBoxViewPanel.
      */
     public JPDFBoxViewPanel() {
@@ -173,6 +158,21 @@ public final class JPDFBoxViewPanel extends JScrollPane implements IPdfView {
         rectRedCur = toolkit.createCustomCursor(image, hotSpot, "rect-red");
         image = Res.getIcon(getClass(), "gfx32/rect-blue.png").getImage();
         rectBlueCur = toolkit.createCustomCursor(image, hotSpot, "rect-blue");
+    }
+
+    /**
+     * Create a JPDFBoxViewPanel with fitType.
+     *
+     * Just calls the main constructor.
+     *
+     * ENH: doesn't seem to be called anywhere - is this intended for a future
+     * enhancement?
+     *
+     * @param fitType
+     */
+    public JPDFBoxViewPanel(FitType fitType) {
+        this();
+        this.fitType = fitType;
     }
 
     @Override

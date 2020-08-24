@@ -38,27 +38,16 @@ import org.apache.pdfbox.rendering.PDFRenderer;
  */
 public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
 
-    /**
-     * Maximum size of a thumbnail icon in Adobe points. 1.5 inches or about 38
-     * mm.
-     */
-    static final float THUMBSIZE = 108;
+    /** Maximum size of a thumbnail icon in Adobe points. */
+    static final float THUMBSIZE = 108;     //1.5 inches or about 38 mm.
 
-    /**
-     * The PDFBox PDF document.
-     */
+    /** The PDFBox PDF document. */
     private final PDDocument document;
-    /**
-     * A PDFBox renderer used to generate page thumbnails.
-     */
+    /** A PDFBox renderer used to generate page thumbnails. */
     private final PDFRenderer thumbnailRenderer;
-    /**
-     * The Swing Box which will contain the thumbnailButton instances.
-     */
+    /** The Swing Box which will contain the thumbnailButton instances. */
     private final Box thumbnailBox;
-    /**
-     * A list of thumbnail buttons, one per page.
-     */
+    /** An array of thumbnail buttons, one per page. */
     private final ThumbnailButton[] thumbnailButtons;
 
     /**
@@ -84,7 +73,7 @@ public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
         this.getVerticalScrollBar().setUnitIncrement((int) (THUMBSIZE / 3));
         // Monitor the JViewport's size
         this.getViewport().addChangeListener(new thumbnailGenControl());
-        // Attach it to the scrolling viewport of the JScrollPane
+        // Attach the thumbnail button box to the scrolling viewport of the JScrollPane
         this.getViewport().add(thumbnailBox);
 
         /**
@@ -120,9 +109,9 @@ public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
     }
 
     /**
-     * Return the ArrayList of all the thumbnail buttons.
+     * Return the array of all the thumbnail buttons.
      *
-     * @return ArrayList
+     * @return the thumbnail button array
      */
     public ThumbnailButton[] getThumbnailButtons() {
         return thumbnailButtons;
@@ -154,6 +143,7 @@ public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
             // if we didn't find a stored thumbnail, create one
             rawthumb = renderThumbnail(pIndex, page);
         }
+        // Give up if we couldn't find or generate a thumbnail.
         if (rawthumb == null) {
             return null;
         }
@@ -164,9 +154,11 @@ public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
         int w = rawthumb.getWidth(null);
         int h = rawthumb.getHeight(null);
         if (h >= w) {
+            // the image is taller than it is wide.
             // scale the image to the proper height
             thumbnail = rawthumb.getScaledInstance(-1, (int) THUMBSIZE, SCALE_DEFAULT);
         } else {
+            // the image is wider than it is tall.
             // scale the image to the proper width
             Image shortThumb
                     = rawthumb.getScaledInstance((int) THUMBSIZE, -1, SCALE_DEFAULT);
@@ -217,6 +209,7 @@ public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
         if (rect == null) {
             rect = page.getMediaBox();
         }
+        // If we can't figure out how big the page is, give up
         if (rect == null) {
             return null;
         }
@@ -277,7 +270,7 @@ public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
             gc.drawLine(0, topVPixels + imgVPixels, thSize - 1, topVPixels + imgVPixels);
         }
 
-        // Finally, return the new thumbnail. Whew!
+        // Finally, return the new thumbnail.
         return squareThumb;
     }
 
@@ -337,7 +330,8 @@ public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
             int botView = viewRect.y + viewRect.height;     // Bottom of the viewport
             /**
              * For each button, decide if the button is visible. If it is, and
-             * it doesn't yet have a thumbnail, generate one. The code is
+             * it doesn't yet have a thumbnail, generate one. Stop after the
+             * last visible thumbnail button has been processed. The code is
              * confusing enough that it is extensively commented. It does seem
              * to work, but may have problems with edge cases.
              */

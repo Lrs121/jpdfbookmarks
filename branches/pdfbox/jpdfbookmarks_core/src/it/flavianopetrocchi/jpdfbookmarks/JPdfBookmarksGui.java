@@ -332,10 +332,10 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
     }
 
     /**
-     * initialize JPdfBookmarksGui instance. This exists because most of the
-     * code in this routine cannot safely be run inside a constructor; there are
-     * "this" leaks and subclass issues. Fortunately JPdfBookmarksGui is only
-     * instantiated in one place, so it is easy to write: var viewer = new
+     * initialize JPdfBookmarksGui instance. This method exists because most of
+     * the code in this routine cannot safely be run inside a constructor; there
+     * are "this" leaks and subclass issues. Fortunately JPdfBookmarksGui is
+     * only instantiated in one place, so it is easy to write: var viewer = new
      * JPdfBookmarksGui; viewer.initGui();
      */
     public void initGui() {
@@ -3466,8 +3466,12 @@ class JPdfBookmarksGui extends JFrame implements FileOperationListener,
             }
         }
 
-        /* I use this instead of TreeSelectionListener to avoid changing view
-         * while dragging */
+        /** 
+         * Process mouse released in the bookmarks tree.
+         * 
+         * I use this instead of TreeSelectionListener to avoid changing view
+         * while dragging.
+         */
         @Override
         public void mouseReleased(MouseEvent e) {
             super.mouseReleased(e);
