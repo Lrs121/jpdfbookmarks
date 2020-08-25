@@ -288,7 +288,7 @@ public class ThumbnailsPane extends JScrollPane implements PageChangedListener {
     public void pageChanged(PageChangedEvent e) {
         ThumbnailsPane tp = (ThumbnailsPane) ((JPDFBoxViewPanel) e.getSource()).getThumbnails();
         // Find the ThumbnailButton that corresponds to the page that has just been selected
-        ThumbnailButton tb = thumbnailButtons[e.getCurrentPage() - 1];
+        ThumbnailButton tb = tp.thumbnailButtons[e.getCurrentPage() - 1];
         Point boxloc = tp.getViewport().getView().getLocation();
         Rectangle buttonRect = tb.getBounds();
         // The coordinates used in scrollRectToVisible turn out to be relative to the Box location,
